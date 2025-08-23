@@ -1,0 +1,15 @@
+// Animations
+@keyframes avatarFloat {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+  
+  @keyframes badgePulse {
+    0%, 100% { transform: scale(1); }
+    50% { transform: scale(1.1); }
+  }
+  
+  // Ion-content override
+  ion-content {
+    --background: linear-gradient(135deg, #f8fbff 0%, #e8f4fd 100%) !important;
+  }

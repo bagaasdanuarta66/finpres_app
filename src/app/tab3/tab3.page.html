@@ -1,17 +1,172 @@
-<ion-header [translucent]="true">
-  <ion-toolbar>
-    <ion-title>
-      Tab 3
-    </ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" style="--background: linear-gradient(135deg, #f8fbff 0%, #e8f4fd 100%);">
+  <div style="max-width: 420px; margin: 0 auto; background: white; box-shadow: 0 0 30px rgba(74, 144, 226, 0.1); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    
+    <!-- HEADER -->
+    <div style="background: linear-gradient(135deg, #ffffff 0%, #FAFBFC 100%); padding: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); position: relative; overflow: hidden;">
+      
+      <!-- Top gradient line -->
+      <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #4A90E2, #6BB6FF);"></div>
+      
+      <!-- Header top row -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <!-- Logo gradient -->
+        <div style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #4A90E2, #6BB6FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.5px;">
+          Sakuma
+        </div>
+        
+        <!-- Create Campaign button -->
+        <button (click)="createCampaign()" style="background: linear-gradient(135deg, #4A90E2, #6BB6FF); color: white; border: none; padding: 12px 20px; border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.15);">+ Buat Campaign</button>
+      </div>
+      
+      <!-- Search Container -->
+      <div style="position: relative; margin-bottom: 20px;">
+        <div style="position: absolute; left: 20px; top: 50%; transform: translateY(-50%); color: #5A6C7D; font-size: 18px;">🔍</div>
+        <input type="text" style="width: 100%; padding: 15px 20px 15px 50px; border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 25px; background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); font-size: 16px; outline: none; transition: all 0.3s ease; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.1);" placeholder="Cari campaign yang menarik..." (input)="searchCampaigns($event)">
+      </div>
 
-<ion-content [fullscreen]="true">
-  <ion-header collapse="condense">
-    <ion-toolbar>
-      <ion-title size="large">Tab 3</ion-title>
-    </ion-toolbar>
-  </ion-header>
+      <!-- Filter Tabs -->
+      <div style="display: flex; gap: 10px; overflow-x: auto; padding: 10px 0; margin-bottom: 20px;">
+        <button (click)="filterCampaigns('semua')" [class.active]="activeFilter === 'semua'" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); color: #5A6C7D; padding: 12px 20px; border-radius: 25px; white-space: nowrap; cursor: pointer; transition: all 0.3s ease; font-size: 14px; font-weight: 500; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.1);" [ngStyle]="activeFilter === 'semua' ? {'background': 'linear-gradient(135deg, #4A90E2, #6BB6FF)', 'color': 'white', 'transform': 'scale(1.05)', 'box-shadow': '0 8px 24px rgba(74, 144, 226, 0.15)'} : {}">Semua</button>
+        
+        <button (click)="filterCampaigns('trending')" [class.active]="activeFilter === 'trending'" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); color: #5A6C7D; padding: 12px 20px; border-radius: 25px; white-space: nowrap; cursor: pointer; transition: all 0.3s ease; font-size: 14px; font-weight: 500; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.1);" [ngStyle]="activeFilter === 'trending' ? {'background': 'linear-gradient(135deg, #4A90E2, #6BB6FF)', 'color': 'white', 'transform': 'scale(1.05)', 'box-shadow': '0 8px 24px rgba(74, 144, 226, 0.15)'} : {}">🔥 Trending</button>
+        
+        <button (click)="filterCampaigns('sekolah')" [class.active]="activeFilter === 'sekolah'" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); color: #5A6C7D; padding: 12px 20px; border-radius: 25px; white-space: nowrap; cursor: pointer; transition: all 0.3s ease; font-size: 14px; font-weight: 500; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.1);" [ngStyle]="activeFilter === 'sekolah' ? {'background': 'linear-gradient(135deg, #4A90E2, #6BB6FF)', 'color': 'white', 'transform': 'scale(1.05)', 'box-shadow': '0 8px 24px rgba(74, 144, 226, 0.15)'} : {}">🏫 Sekolah</button>
+        
+        <button (click)="filterCampaigns('sains')" [class.active]="activeFilter === 'sains'" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); color: #5A6C7D; padding: 12px 20px; border-radius: 25px; white-space: nowrap; cursor: pointer; transition: all 0.3s ease; font-size: 14px; font-weight: 500; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.1);" [ngStyle]="activeFilter === 'sains' ? {'background': 'linear-gradient(135deg, #4A90E2, #6BB6FF)', 'color': 'white', 'transform': 'scale(1.05)', 'box-shadow': '0 8px 24px rgba(74, 144, 226, 0.15)'} : {}">🔬 Sains</button>
+        
+        <button (click)="filterCampaigns('seni')" [class.active]="activeFilter === 'seni'" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); color: #5A6C7D; padding: 12px 20px; border-radius: 25px; white-space: nowrap; cursor: pointer; transition: all 0.3s ease; font-size: 14px; font-weight: 500; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.1);" [ngStyle]="activeFilter === 'seni' ? {'background': 'linear-gradient(135deg, #4A90E2, #6BB6FF)', 'color': 'white', 'transform': 'scale(1.05)', 'box-shadow': '0 8px 24px rgba(74, 144, 226, 0.15)'} : {}">🎨 Seni</button>
+        
+        <button (click)="filterCampaigns('sosial')" [class.active]="activeFilter === 'sosial'" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); color: #5A6C7D; padding: 12px 20px; border-radius: 25px; white-space: nowrap; cursor: pointer; transition: all 0.3s ease; font-size: 14px; font-weight: 500; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.1);" [ngStyle]="activeFilter === 'sosial' ? {'background': 'linear-gradient(135deg, #4A90E2, #6BB6FF)', 'color': 'white', 'transform': 'scale(1.05)', 'box-shadow': '0 8px 24px rgba(74, 144, 226, 0.15)'} : {}">🤝 Sosial</button>
+      </div>
+    </div>
 
-  <app-explore-container name="Tab 3 page"></app-explore-container>
+    <!-- MAIN CONTENT -->
+    <div style="padding: 30px 20px 120px;">
+      
+      <!-- Trending Banner -->
+      <div style="background: linear-gradient(135deg, #fdcb6e, #fab1a0); border-radius: 20px; padding: 25px; margin-bottom: 30px; color: white; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(253, 203, 110, 0.3);">
+        <div style="font-size: 18px; font-weight: 700; margin-bottom: 10px;">🔥 Campaign Terpopuler Minggu Ini</div>
+        <div style="font-size: 14px; opacity: 0.9; line-height: 1.4;">Dukung teman-temanmu mencapai impian mereka dan raih reward menarik!</div>
+      </div>
+
+      <!-- Section Title -->
+      <div style="font-size: 20px; font-weight: 700; color: #2C3E50; margin-bottom: 20px; display: flex; align-items: center; gap: 10px;">
+        <span>💰</span>
+        <span>Campaign Aktif</span>
+      </div>
+
+      <!-- Campaign Grid -->
+      <div style="display: flex; flex-direction: column; gap: 20px;">
+        
+        <!-- Campaign Card 1 -->
+        <div *ngIf="shouldShowCampaign('sekolah')" (click)="viewCampaign('festival-sains')" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 20px; overflow: hidden; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); cursor: pointer; transition: all 0.3s ease; position: relative;">
+          <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; color: white; font-size: 48px; position: relative;">
+            🏫
+            <div style="position: absolute; top: 15px; right: 15px; background: #e84393; color: white; padding: 6px 12px; border-radius: 15px; font-size: 10px; font-weight: 700; text-transform: uppercase; box-shadow: 0 4px 16px rgba(232, 67, 147, 0.3);">TRENDING</div>
+          </div>
+          <div style="padding: 25px;">
+            <div style="font-size: 18px; font-weight: 700; color: #2C3E50; margin-bottom: 8px; line-height: 1.3;">Festival Sains SMA Negeri 1 Jakarta</div>
+            <div style="font-size: 12px; color: #5A6C7D; margin-bottom: 15px; font-weight: 500;">OSIS SMA Negeri 1 Jakarta</div>
+            <div style="font-size: 14px; color: #5A6C7D; margin-bottom: 20px; line-height: 1.5;">Mari bersama-sama mengadakan festival sains terbesar se-Jakarta untuk memperkenalkan inovasi teknologi terbaru kepada masyarakat</div>
+            
+            <!-- Progress Bar -->
+            <div style="margin-bottom: 20px;">
+              <div style="width: 100%; height: 10px; background: #E8F4FD; border-radius: 5px; overflow: hidden; margin-bottom: 12px; box-shadow: inset 0 2px 4px rgba(74, 144, 226, 0.1);">
+                <div style="height: 100%; background: linear-gradient(90deg, #4A90E2, #6BB6FF); border-radius: 5px; width: 75%; transition: width 1s ease;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5A6C7D; font-weight: 500;">
+                <span>Terkumpul: Rp 7.500.000</span>
+                <span>Target: Rp 10.000.000</span>
+              </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid #E8F4FD;">
+              <div style="font-size: 16px; font-weight: 700; color: #4A90E2;">Target: 10.000 Poin</div>
+              <div style="font-size: 12px; color: #5A6C7D; background: #E8F4FD; padding: 4px 8px; border-radius: 10px; font-weight: 500;">15 hari lagi</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campaign Card 2 -->
+        <div *ngIf="shouldShowCampaign('sains')" (click)="viewCampaign('air-bersih')" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 20px; overflow: hidden; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); cursor: pointer; transition: all 0.3s ease;">
+          <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; color: white; font-size: 48px;">🔬</div>
+          <div style="padding: 25px;">
+            <div style="font-size: 18px; font-weight: 700; color: #2C3E50; margin-bottom: 8px; line-height: 1.3;">Proyek Penelitian Air Bersih</div>
+            <div style="font-size: 12px; color: #5A6C7D; margin-bottom: 15px; font-weight: 500;">Tim Riset SMA Plus Bina Bangsa</div>
+            <div style="font-size: 14px; color: #5A6C7D; margin-bottom: 20px; line-height: 1.5;">Penelitian inovatif untuk menciptakan filter air sederhana yang dapat digunakan di daerah terpencil Indonesia</div>
+            
+            <div style="margin-bottom: 20px;">
+              <div style="width: 100%; height: 10px; background: #E8F4FD; border-radius: 5px; overflow: hidden; margin-bottom: 12px; box-shadow: inset 0 2px 4px rgba(74, 144, 226, 0.1);">
+                <div style="height: 100%; background: linear-gradient(90px, #4A90E2, #6BB6FF); border-radius: 5px; width: 45%; transition: width 1s ease;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5A6C7D; font-weight: 500;">
+                <span>Terkumpul: Rp 2.250.000</span>
+                <span>Target: Rp 5.000.000</span>
+              </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid #E8F4FD;">
+              <div style="font-size: 16px; font-weight: 700; color: #4A90E2;">Target: 5.000 Poin</div>
+              <div style="font-size: 12px; color: #5A6C7D; background: #E8F4FD; padding: 4px 8px; border-radius: 10px; font-weight: 500;">22 hari lagi</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campaign Card 3 -->
+        <div *ngIf="shouldShowCampaign('seni')" (click)="viewCampaign('teater')" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 20px; overflow: hidden; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); cursor: pointer; transition: all 0.3s ease;">
+          <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; color: white; font-size: 48px;">🎭</div>
+          <div style="padding: 25px;">
+            <div style="font-size: 18px; font-weight: 700; color: #2C3E50; margin-bottom: 8px; line-height: 1.3;">Pentas Teater "Pahlawan Nusantara"</div>
+            <div style="font-size: 12px; color: #5A6C7D; margin-bottom: 15px; font-weight: 500;">Ekstrakurikuler Teater SMAN 5 Bandung</div>
+            <div style="font-size: 14px; color: #5A6C7D; margin-bottom: 20px; line-height: 1.5;">Pertunjukan teater yang mengangkat kisah para pahlawan Indonesia dengan teknologi multimedia modern</div>
+            
+            <div style="margin-bottom: 20px;">
+              <div style="width: 100%; height: 10px; background: #E8F4FD; border-radius: 5px; overflow: hidden; margin-bottom: 12px; box-shadow: inset 0 2px 4px rgba(74, 144, 226, 0.1);">
+                <div style="height: 100%; background: linear-gradient(90deg, #4A90E2, #6BB6FF); border-radius: 5px; width: 60%; transition: width 1s ease;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5A6C7D; font-weight: 500;">
+                <span>Terkumpul: Rp 3.600.000</span>
+                <span>Target: Rp 6.000.000</span>
+              </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid #E8F4FD;">
+              <div style="font-size: 16px; font-weight: 700; color: #4A90E2;">Target: 6.000 Poin</div>
+              <div style="font-size: 12px; color: #5A6C7D; background: #E8F4FD; padding: 4px 8px; border-radius: 10px; font-weight: 500;">8 hari lagi</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Campaign Card 4 -->
+        <div *ngIf="shouldShowCampaign('sosial')" (click)="viewCampaign('banjir')" style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 20px; overflow: hidden; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); cursor: pointer; transition: all 0.3s ease;">
+          <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; color: white; font-size: 48px; position: relative;">
+            🤝
+            <div style="position: absolute; top: 15px; right: 15px; background: #e84393; color: white; padding: 6px 12px; border-radius: 15px; font-size: 10px; font-weight: 700; text-transform: uppercase; box-shadow: 0 4px 16px rgba(232, 67, 147, 0.3); animation: urgentPulse 2s infinite;">URGENT</div>
+          </div>
+          <div style="padding: 25px;">
+            <div style="font-size: 18px; font-weight: 700; color: #2C3E50; margin-bottom: 8px; line-height: 1.3;">Bantuan Korban Banjir Jakarta</div>
+            <div style="font-size: 12px; color: #5A6C7D; margin-bottom: 15px; font-weight: 500;">PMR SMA Negeri 3 Jakarta</div>
+            <div style="font-size: 14px; color: #5A6C7D; margin-bottom: 20px; line-height: 1.5;">Mengumpulkan dana untuk membantu korban banjir Jakarta dengan menyediakan sembako dan obat-obatan</div>
+            
+            <div style="margin-bottom: 20px;">
+              <div style="width: 100%; height: 10px; background: #E8F4FD; border-radius: 5px; overflow: hidden; margin-bottom: 12px; box-shadow: inset 0 2px 4px rgba(74, 144, 226, 0.1);">
+                <div style="height: 100%; background: linear-gradient(90deg, #4A90E2, #6BB6FF); border-radius: 5px; width: 30%; transition: width 1s ease;"></div>
+              </div>
+              <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5A6C7D; font-weight: 500;">
+                <span>Terkumpul: Rp 1.500.000</span>
+                <span>Target: Rp 5.000.000</span>
+              </div>
+            </div>
+            
+            <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid #E8F4FD;">
+              <div style="font-size: 16px; font-weight: 700; color: #4A90E2;">Target: 5.000 Poin</div>
+              <div style="font-size: 12px; color: #5A6C7D; background: #E8F4FD; padding: 4px 8px; border-radius: 10px; font-weight: 500;">5 hari lagi</div>
+            </div>
+          </div>
+        </div>
+
+      </div>
+      
+    </div>
+  </div>
 </ion-content>

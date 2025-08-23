@@ -1,0 +1,62 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1"></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" style="--background: linear-gradient(135deg, #f8fbff 0%, #e8f4fd 100%);">
+  <div style="max-width: 420px; margin: 0 auto; background: white; box-shadow: 0 0 30px rgba(74, 144, 226, 0.1); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+    
+    <div style="background: linear-gradient(135deg, #ffffff 0%, #FAFBFC 100%); padding: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); position: relative; overflow: hidden;">
+      <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #8B5CF6, #EC4899);"></div>
+      
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <div style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #8B5CF6, #EC4899); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px;">🤖 AI Sakuma</div>
+        <div style="background: linear-gradient(135deg, #8B5CF6, #EC4899); color: white; padding: 8px 16px; border-radius: 20px; font-size: 12px; font-weight: 600;">● Online</div>
+      </div>
+      
+      <div style="text-align: center; margin-bottom: 25px;">
+        <div style="width: 100px; height: 100px; margin: 0 auto 20px; background: linear-gradient(135deg, #8B5CF6, #EC4899); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 48px; color: white; box-shadow: 0 12px 32px rgba(139, 92, 246, 0.4);">🤖</div>
+        <div style="font-size: 20px; color: #2C3E50; margin-bottom: 8px; font-weight: 700;">Halo! Saya SakumaAI</div>
+        <div style="font-size: 14px; color: #5A6C7D;">Siap membantu tugas dan pembelajaran Anda</div>
+      </div>
+    </div>
+
+    <div style="padding: 30px 20px 100px 20px;">
+      
+      <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 15px; margin-bottom: 30px;">
+        <div *ngFor="let feature of features" (click)="openAIFeature(feature)" style="background: rgba(255,255,255,0.95); border: 1px solid rgba(74,144,226,0.2); border-radius: 25px; padding: 25px 20px; text-align: center; cursor: pointer; box-shadow: 0 8px 32px rgba(74,144,226,0.1);">
+          <div style="font-size: 48px; margin-bottom: 15px;">{{ feature.icon }}</div>
+          <div style="font-size: 16px; font-weight: 700; color: #2C3E50; margin-bottom: 8px;">{{ feature.title }}</div>
+          <div style="font-size: 12px; color: #5A6C7D; line-height: 1.4;">{{ feature.desc }}</div>
+        </div>
+      </div>
+
+      <div style="background: rgba(255,255,255,0.95); border: 1px solid rgba(74,144,226,0.2); border-radius: 25px; margin-bottom: 30px; overflow: hidden; box-shadow: 0 8px 32px rgba(74,144,226,0.1);">
+        <div style="background: linear-gradient(135deg, #8B5CF6, #EC4899); color: white; padding: 25px; text-align: center;">
+          <div style="font-size: 18px; font-weight: 700; margin-bottom: 8px;">Chat dengan AI</div>
+          <div style="font-size: 12px; opacity: 0.9;">Tanya apa saja, saya siap membantu!</div>
+        </div>
+        
+        <div #chatBody class="chat-body" style="padding: 25px; max-height: 300px; overflow-y: auto; display: flex; flex-direction: column; gap: 20px;">
+          <div *ngFor="let msg of messages" [style.flex-direction]="msg.sender === 'user' ? 'row-reverse' : 'row'" style="display: flex; align-items: flex-start; gap: 12px;">
+            <div [style.background]="msg.sender === 'user' ? 'linear-gradient(135deg, #4A90E2, #6BB6FF)' : 'linear-gradient(135deg, #8B5CF6, #EC4899)'" style="width: 35px; height: 35px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 16px; color: white; flex-shrink: 0;">
+              {{ msg.sender === 'user' ? 'ME' : '🤖' }}
+            </div>
+            <div [style.background]="msg.sender === 'user' ? 'linear-gradient(135deg, #4A90E2, #6BB6FF)' : '#E8F4FD'" [style.color]="msg.sender === 'user' ? 'white' : '#2C3E50'" style="padding: 15px 18px; border-radius: 20px; max-width: 75%; font-size: 14px; line-height: 1.5;">
+              {{ msg.text }}
+            </div>
+          </div>
+        </div>
+        
+        <div style="padding: 20px 25px; border-top: 1px solid #E8F4FD; display: flex; gap: 12px; align-items: center;">
+          <input [(ngModel)]="currentMessage" (keyup.enter)="sendMessage()" type="text" style="flex: 1; padding: 12px 18px; border: 1px solid rgba(74,144,226,0.2); border-radius: 25px; outline: none; font-size: 14px; background: rgba(255,255,255,0.95);" placeholder="Ketik pertanyaan Anda...">
+          <button (click)="sendMessage()" style="background: linear-gradient(135deg, #8B5CF6, #EC4899); color: white; border: none; width: 45px; height: 45px; border-radius: 50%; cursor: pointer; font-size: 18px;">➤</button>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</ion-content>

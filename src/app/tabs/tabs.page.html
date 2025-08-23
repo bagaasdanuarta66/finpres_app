@@ -1,20 +1,39 @@
+<!-- tabs/tabs.page.html (Dengan Emoji) -->
 <ion-tabs>
-
-  <ion-tab-bar slot="bottom">
-    <ion-tab-button tab="tab1" href="/tabs/tab1">
-      <ion-icon aria-hidden="true" name="triangle"></ion-icon>
-      <ion-label>Tab 1</ion-label>
+  <ion-tab-bar slot="bottom" class="sakuma-tab-bar">
+    <!-- Beranda -->
+    <ion-tab-button tab="tab1">
+      <!-- Ganti ion-icon dengan span berisi emoji -->
+      <span class="tab-emoji">🏠</span>
+      <ion-label>Beranda</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="tab2" href="/tabs/tab2">
-      <ion-icon aria-hidden="true" name="ellipse"></ion-icon>
-      <ion-label>Tab 2</ion-label>
+     <!-- Campaign -->
+    <ion-tab-button tab="tab3">
+      <span class="tab-emoji">💰</span>
+      <ion-label>Campaign</ion-label>
     </ion-tab-button>
 
-    <ion-tab-button tab="tab3" href="/tabs/tab3">
-      <ion-icon aria-hidden="true" name="square"></ion-icon>
-      <ion-label>Tab 3</ion-label>
+
+    <!-- QR Scanner (Center Button) -->
+    <ion-tab-button (click)="scanQR()">
+      <div class="scan-button">
+        <!-- Ganti ion-icon di dalam tombol scan juga -->
+        <span class="scan-emoji">📲</span>
+      </div>
     </ion-tab-button>
+
+     <!-- Program -->
+    <ion-tab-button tab="tab4">
+      <span class="tab-emoji">🏆</span>
+      <ion-label>Program</ion-label>
+    </ion-tab-button>
+    
+ <ion-tab-button tab="tab2">
+      <span class="tab-emoji">👤</span>
+      <ion-label>Profile</ion-label>
+    </ion-tab-button>
+   
+   
   </ion-tab-bar>
-
 </ion-tabs>
