@@ -3,33 +3,30 @@
     
     <!-- HEADER -->
     <div style="background: linear-gradient(135deg, #ffffff 0%, #FAFBFC 100%); padding: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); position: relative; overflow: hidden;">
-      
-      <!-- Top gradient line -->
-      <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #4A90E2, #6BB6FF);"></div>
-      
-      <!-- Header top row -->
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-        <!-- Logo gradient -->
-        <div style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #4A90E2, #6BB6FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.5px;">
-          Sakuma
-        </div>
-        
-        <!-- Settings button -->
-        <button (click)="openSettings()" style="background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(74, 144, 226, 0.2); padding: 12px; border-radius: 50%; cursor: pointer; font-size: 16px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.1); backdrop-filter: blur(10px); transition: all 0.3s ease;">
-          ⚙️
-        </button>
+    
+  <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #4A90E2, #6BB6FF);"></div>
+  
+  <ng-container *ngIf="authService.currentUser$ | async as user">
+
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+      <div style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #4A90E2, #6BB6FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.5px;">
+        Sakuma
       </div>
-      
-      <!-- Profile header -->
-      <div style="text-align: center; position: relative;">
-        <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 48px; font-weight: bold; color: white; position: relative; box-shadow: 0 12px 32px rgba(74, 144, 226, 0.25); animation: avatarFloat 4s ease-in-out infinite;">
-          AH
-          <button (click)="editAvatar()" style="position: absolute; bottom: 5px; right: 5px; background: white; color: #4A90E2; border: 2px solid #4A90E2; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 14px; transition: all 0.3s ease; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.1);">📷</button>
-        </div>
-        <div style="font-size: 26px; font-weight: 700; color: #2C3E50; margin-bottom: 8px;">Ahmad Hidayat</div>
-        <div style="color: #5A6C7D; margin-bottom: 25px; font-size: 14px;">SMA Negeri 1 Jakarta • Kelas 11 IPA</div>
-      </div>
+      <button (click)="openSettings()" style="background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(74, 144, 226, 0.2); padding: 12px; border-radius: 50%; cursor: pointer; font-size: 16px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.1);">
+        ⚙️
+      </button>
     </div>
+    
+    <div style="text-align: center; position: relative;">
+      <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 48px; font-weight: bold; color: white; position: relative; box-shadow: 0 12px 32px rgba(74, 144, 226, 0.25);">
+        {{ getInitials(user.email) }}
+        <button (click)="editAvatar()" style="position: absolute; bottom: 5px; right: 5px; background: white; color: #4A90E2; border: 2px solid #4A90E2; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 14px;">📷</button>
+      </div>
+      <div style="font-size: 26px; font-weight: 700; color: #2C3E50; margin-bottom: 8px;">{{ user.email }}</div>
+      <div style="color: #5A6C7D; margin-bottom: 25px; font-size: 14px;">SMA Negeri 1 Jakarta • Kelas 11 IPA</div>
+    </div>
+  
+  </ng-container> </div>
 
     <!-- MAIN CONTENT -->
     <div style="padding: 30px 20px 120px;">

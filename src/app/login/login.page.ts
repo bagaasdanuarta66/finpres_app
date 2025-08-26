@@ -6,9 +6,9 @@ import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-login',
   templateUrl: './login.page.html',
-  standalone:false,
+  standalone: false,
 })
-export class LoginPage {
+export class LoginPage { // <-- Class dimulai di sini
   // Variabel untuk menampung input dari form
   email = '';
   password = '';
@@ -19,17 +19,30 @@ export class LoginPage {
     private alertController: AlertController
   ) { }
 
+  // Fungsi login HARUS ada di dalam class ini
   async login() {
+    // Mata-mata #1: Untuk memastikan tombolnya berfungsi
+    console.log('Tombol login diklik! Mencoba login dengan email:', this.email);
+
     try {
-      await this.authService.login(this.email, this.password);
-      // Jika berhasil, arahkan ke halaman utama aplikasi
+      const response = await this.authService.login(this.email, this.password);
+      
+      // Mata-mata #2: Untuk memastikan login ke Firebase berhasil
+      console.log('Login ke Firebase BERHASIL!', response);
+      
+      // Arahkan ke halaman utama aplikasi
       this.router.navigate(['/tabs/tab1']);
+
     } catch (error: any) {
-      // Jika gagal, tampilkan pesan error dari Firebase
+      // Mata-mata #3: Untuk melihat error apa yang dikembalikan Firebase
+      console.error('Login GAGAL! Error dari Firebase:', error);
+      
+      // Memanggil fungsi showAlert yang ada di dalam class yang sama
       this.showAlert('Login Gagal', 'Email atau password yang Anda masukkan salah.');
     }
   }
 
+  // Fungsi showAlert juga HARUS ada di dalam class ini
   async showAlert(header: string, message: string) {
     const alert = await this.alertController.create({
       header,
@@ -38,4 +51,5 @@ export class LoginPage {
     });
     await alert.present();
   }
-}
+
+} // <-- Kurung kurawal penutup class ada di paling akhir

@@ -1,14 +1,20 @@
 // src/app/services/auth.service.ts
-
 import { Injectable } from '@angular/core';
 import { AngularFireAuth } from '@angular/fire/compat/auth';
+import firebase from 'firebase/compat/app'; // <-- Pastikan ini ada
+import { Observable } from 'rxjs'; 
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+   // TAMBAHKAN PROPERTI INI
+  currentUser$: Observable<firebase.User | null>;
 
-  constructor(private afAuth: AngularFireAuth) { }
+  constructor(private afAuth: AngularFireAuth) {
+    // INISIALISASI PROPERTI DI DALAM CONSTRUCTOR
+    this.currentUser$ = this.afAuth.authState;
+  }
 
   // Fungsi untuk Register
   async register(email: string, password: string): Promise<any> {

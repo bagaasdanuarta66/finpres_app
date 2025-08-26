@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
+// Di bagian atas, bersama import lainnya
+import { AuthService } from '../services/auth.service';
 
 @Component({
   selector: 'app-tab2',
@@ -11,9 +13,18 @@ import { Router } from '@angular/router';
 export class Tab2Page implements OnInit {
 
   constructor(
-    private alertController: AlertController,
-    private router: Router
-  ) {}
+    // UBAH DARI 'private' MENJADI 'public'
+    public authService: AuthService,
+    private router: Router,
+    private alertController: AlertController
+  ) { }
+
+  // TAMBAHKAN FUNGSI BARU INI
+  // Fungsi untuk mengambil huruf pertama dari email sebagai inisial
+  getInitials(email: string | null | undefined): string {
+    if (!email) return '';
+    return email.substring(0, 2).toUpperCase();
+  }
 
   ngOnInit() {
     // Add any initialization logic here
@@ -173,7 +184,7 @@ export class Tab2Page implements OnInit {
     await alert.present();
   }
 
-  async logout() {
+async logout() {
     const alert = await this.alertController.create({
       header: '🚪 Konfirmasi Logout',
       message: 'Apakah Anda yakin ingin keluar dari akun Sakuma?',
@@ -184,8 +195,15 @@ export class Tab2Page implements OnInit {
         },
         {
           text: 'Logout',
-          handler: () => {
-            this.showAlert('✅ Logout berhasil!\n\nTerima kasih telah menggunakan Sakuma. Sampai jumpa lagi!');
+          handler: async () => {
+            try {
+              await this.authService.logout();
+              this.router.navigate(['/login'], { replaceUrl: true });
+              console.log('Pengguna berhasil logout dari Firebase!');
+            } catch (error) {
+              console.error('Gagal logout', error);
+              this.showAlert('Logout Gagal. Silakan coba lagi.');
+            }
           }
         }
       ]
