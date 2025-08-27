@@ -75,8 +75,11 @@ export class Tab1Page implements OnInit {
    // Ganti fungsi navigateTo() Anda dengan yang ini
 navigateTo(pageId: string) {
   switch (pageId) {
-    case 'campaign':
+    case 'profile':
       this.router.navigate(['/tabs/tab2']);
+      break;
+      case 'campaign':
+      this.router.navigate(['/tabs/tab3']);
       break;
     case 'program':
       this.router.navigate(['/tabs/tab4']);

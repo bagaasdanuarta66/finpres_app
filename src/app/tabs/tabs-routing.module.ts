@@ -32,6 +32,10 @@ const routes: Routes = [
         path: 'tab2', // Alamatnya akan otomatis menjadi /tabs/tab2
         loadChildren: () => import('../tab2/tab2.module').then(m => m.Tab2PageModule)
       },
+      { // <-- PASTIKAN BAGIAN INI ADA
+    path: 'tab3', // Untuk Campaign
+    loadChildren: () => import('../tab3/tab3.module').then(m => m.Tab3PageModule)
+  },
       {
         path: 'tab4', // Alamatnya akan otomatis menjadi /tabs/tab4
         loadChildren: () => import('../tab4/tab4.module').then(m => m.Tab4PageModule)
