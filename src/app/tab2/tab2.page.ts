@@ -3,6 +3,8 @@ import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
 // Di bagian atas, bersama import lainnya
 import { AuthService } from '../services/auth.service';
+import { Observable } from 'rxjs'; // <-- Import Observable
+import { switchMap } from 'rxjs/operators'; // <-
 
 @Component({
   selector: 'app-tab2',
@@ -12,22 +14,35 @@ import { AuthService } from '../services/auth.service';
 })
 export class Tab2Page implements OnInit {
 
+  
+  // Variabel baru untuk menampung data profil
+  userProfile$: Observable<any | null>;
+
   constructor(
-    // UBAH DARI 'private' MENJADI 'public'
     public authService: AuthService,
     private router: Router,
     private alertController: AlertController
-  ) { }
-
-  // TAMBAHKAN FUNGSI BARU INI
-  // Fungsi untuk mengambil huruf pertama dari email sebagai inisial
-  getInitials(email: string | null | undefined): string {
-    if (!email) return '';
-    return email.substring(0, 2).toUpperCase();
+  ) {
+    // Mengambil data profil berdasarkan status login
+    this.userProfile$ = this.authService.currentUser$.pipe(
+      switchMap(user => {
+        if (user) {
+          // Jika user login, ambil profilnya dari Firestore
+          return this.authService.getUserProfile(user.uid);
+        } else {
+          // Jika tidak login, kembalikan null
+          return new Observable(sub => sub.next(null));
+        }
+      })
+    );
   }
-
-  ngOnInit() {
-    // Add any initialization logic here
+  
+  ngOnInit() {}
+   // --- TAMBAHKAN FUNGSI INI ---
+  getInitials(namaLengkap: string | null | undefined): string {
+    if (!namaLengkap) return '';
+    // Mengambil 2 huruf pertama dari nama lengkap untuk inisial
+    return namaLengkap.substring(0, 2).toUpperCase();
   }
 
   navigateTo(page: string) {

@@ -8,12 +8,14 @@ import { AuthService } from '../services/auth.service';
 @Component({
   selector: 'app-register',
   templateUrl: './register.page.html',
-  standalone: false, // <-- T
+  standalone: false,
 })
 export class RegisterPage {
   // Variabel untuk menampung input dari form
   email = '';
   password = '';
+  namaLengkap = ''; // <-- 1. TAMBAHKAN PROPERTI INI
+  sekolah = '';     // <-- 2. TAMBAHKAN PROPERTI INI
 
   constructor(
     private authService: AuthService,
@@ -23,7 +25,15 @@ export class RegisterPage {
 
   async register() {
     try {
-      await this.authService.register(this.email, this.password);
+      // 3. BUAT OBJEK INI UNTUK MENGUMPULKAN DATA BARU
+      const profileData = {
+        namaLengkap: this.namaLengkap,
+        sekolah: this.sekolah
+      };
+      
+      // 4. KIRIM profileData SEBAGAI ARGUMEN KETIGA
+      await this.authService.register(this.email, this.password, profileData);
+      
       // Jika berhasil, tampilkan notifikasi dan arahkan ke halaman login
       this.showAlert('Registrasi Berhasil!', 'Silakan login dengan akun baru Anda.');
       this.router.navigate(['/login']);
