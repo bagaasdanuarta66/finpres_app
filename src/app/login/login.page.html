@@ -1,25 +1,174 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Login</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content [fullscreen]="true" style="--background: linear-gradient(135deg, #f8fbff 0%, #e8f4fd 100%);">
+  <div style="max-width: 420px; margin: 0 auto; background: white; min-height: 100vh; box-shadow: 0 0 30px rgba(74, 144, 226, 0.1); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; display: flex; flex-direction: column; justify-content: center; padding: 20px;">
+    
+    <!-- LOGIN HEADER -->
+    <div style="text-align: center; margin-bottom: 40px;">
+      <!-- Logo -->
+      <div style="font-size: 36px; font-weight: 700; background: linear-gradient(135deg, #4A90E2, #6BB6FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.5px; margin-bottom: 10px;">
+        Sakuma
+      </div>
+      <div style="font-size: 16px; color: #5A6C7D; margin-bottom: 30px;">
+        Masuk ke akun Anda
+      </div>
+      
+      <!-- Welcome illustration -->
+      <div style="width: 120px; height: 120px; margin: 0 auto 20px; border-radius: 50%; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; font-size: 48px; color: white; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.2);">
+        👋
+      </div>
+    </div>
 
-<ion-content class="ion-padding">
-  <ion-item>
-    <ion-label position="floating">Email</ion-label>
-    <ion-input type="email" [(ngModel)]="email" placeholder="masukkan email anda"></ion-input>
-  </ion-item>
+    <!-- LOGIN FORM CONTAINER -->
+    <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 25px; padding: 30px; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); position: relative; overflow: hidden;">
+      
+      <!-- Top gradient line -->
+      <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #4A90E2, #6BB6FF);"></div>
+      
+      <!-- Form Title -->
+      <div style="font-size: 22px; font-weight: 700; color: #2C3E50; text-align: center; margin-bottom: 30px;">
+        Selamat Datang Kembali!
+      </div>
 
-  <ion-item>
-    <ion-label position="floating">Password</ion-label>
-    <ion-input type="password" [(ngModel)]="password" placeholder="masukkan password"></ion-input>
-  </ion-item>
+      <!-- Email Input -->
+      <div style="margin-bottom: 20px;">
+        <div style="font-size: 14px; font-weight: 600; color: #2C3E50; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+          <span>📧</span>
+          <span>Email</span>
+        </div>
+        <ion-item style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; --padding-start: 20px; --padding-end: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); box-shadow: 0 4px 16px rgba(74, 144, 226, 0.08);">
+          <ion-input 
+            type="email" 
+            [(ngModel)]="email" 
+            placeholder="masukkan email anda"
+            style="--color: #2C3E50; --placeholder-color: #8E9AAF; font-size: 16px; font-weight: 500;"></ion-input>
+        </ion-item>
+      </div>
 
-  <ion-button expand="block" (click)="login()" class="ion-margin-top">
-    Login
-  </ion-button>
-  
-  <ion-button expand="block" fill="clear" routerLink="/register">
-    Belum punya akun? Daftar
-  </ion-button>
+      <!-- Password Input -->
+      <div style="margin-bottom: 30px;">
+        <div style="font-size: 14px; font-weight: 600; color: #2C3E50; margin-bottom: 8px; display: flex; align-items: center; gap: 8px;">
+          <span>🔒</span>
+          <span>Password</span>
+        </div>
+        <ion-item style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; --padding-start: 20px; --padding-end: 20px; backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); box-shadow: 0 4px 16px rgba(74, 144, 226, 0.08);">
+          <ion-input 
+            type="password" 
+            [(ngModel)]="password" 
+            placeholder="masukkan password"
+            style="--color: #2C3E50; --placeholder-color: #8E9AAF; font-size: 16px; font-weight: 500;"></ion-input>
+        </ion-item>
+      </div>
+
+      <!-- Remember & Forgot -->
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px; font-size: 14px;">
+        <label style="display: flex; align-items: center; gap: 8px; color: #5A6C7D; cursor: pointer;">
+          <input type="checkbox" style="accent-color: #4A90E2;">
+          <span>Ingat saya</span>
+        </label>
+        <a href="/forgot-password" style="color: #4A90E2; text-decoration: none; font-weight: 600;">
+          Lupa password?
+        </a>
+      </div>
+
+      <!-- Login Button -->
+      <ion-button 
+        expand="block" 
+        (click)="login()"
+        style="
+          --background: linear-gradient(135deg, #4A90E2 0%, #6BB6FF 100%);
+          --background-activated: #3E7DD6;
+          --background-hover: #5A94E6;
+          --border-radius: 15px;
+          --box-shadow: 0 8px 24px rgba(74, 144, 226, 0.3);
+          --color: white;
+          height: 55px;
+          font-weight: 700;
+          font-size: 16px;
+          margin-bottom: 20px;
+          text-transform: none;
+          letter-spacing: 0.5px;
+          position: relative;
+          overflow: hidden;
+        ">
+        <span style="position: relative; z-index: 2;">Masuk Sekarang</span>
+      </ion-button>
+
+      <!-- Divider -->
+      <div style="display: flex; align-items: center; margin: 25px 0; color: #8E9AAF; font-size: 14px;">
+        <div style="flex: 1; height: 1px; background: rgba(74, 144, 226, 0.2);"></div>
+        <span style="padding: 0 20px; background: rgba(255, 255, 255, 0.95); border-radius: 20px;">atau</span>
+        <div style="flex: 1; height: 1px; background: rgba(74, 144, 226, 0.2);"></div>
+      </div>
+
+      <!-- Social Login Buttons -->
+      <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 15px; margin-bottom: 25px;">
+        <ion-button 
+          fill="outline"
+          style="
+            --border-color: rgba(74, 144, 226, 0.3);
+            --color: #2C3E50;
+            --background: rgba(255, 255, 255, 0.95);
+            --background-hover: rgba(74, 144, 226, 0.05);
+            --border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(74, 144, 226, 0.08);
+            height: 50px;
+            font-weight: 600;
+            text-transform: none;
+          ">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px;">🔵</span>
+            <span>Google</span>
+          </div>
+        </ion-button>
+        
+        <ion-button 
+          fill="outline"
+          style="
+            --border-color: rgba(74, 144, 226, 0.3);
+            --color: #2C3E50;
+            --background: rgba(255, 255, 255, 0.95);
+            --background-hover: rgba(74, 144, 226, 0.05);
+            --border-radius: 15px;
+            backdrop-filter: blur(10px);
+            box-shadow: 0 4px 16px rgba(74, 144, 226, 0.08);
+            height: 50px;
+            font-weight: 600;
+            text-transform: none;
+          ">
+          <div style="display: flex; align-items: center; gap: 8px;">
+            <span style="font-size: 18px;">📘</span>
+            <span>Facebook</span>
+          </div>
+        </ion-button>
+      </div>
+
+      <!-- Register Link -->
+      <div style="text-align: center; font-size: 15px; color: #5A6C7D;">
+        Belum punya akun? 
+        <ion-button 
+          fill="clear" 
+          routerLink="/register"
+          style="
+            --color: #4A90E2;
+            --color-hover: #3E7DD6;
+            font-weight: 700;
+            text-transform: none;
+            --padding-start: 5px;
+            --padding-end: 5px;
+            font-size: 15px;
+          ">
+          Daftar Sekarang
+        </ion-button>
+      </div>
+    </div>
+
+    <!-- Footer Info -->
+    <div style="text-align: center; margin-top: 30px; color: #8E9AAF; font-size: 13px; line-height: 1.5;">
+      Dengan masuk, Anda menyetujui <a href="/terms" style="color: #4A90E2; text-decoration: none;">Syarat & Ketentuan</a> dan <a href="/privacy" style="color: #4A90E2; text-decoration: none;">Kebijakan Privasi</a> kami
+    </div>
+
+    <!-- Decorative elements -->
+    <div style="position: fixed; top: -50px; left: -50px; width: 100px; height: 100px; background: linear-gradient(135deg, rgba(74, 144, 226, 0.1), rgba(107, 182, 255, 0.1)); border-radius: 50%; z-index: -1;"></div>
+    <div style="position: fixed; bottom: -30px; right: -30px; width: 80px; height: 80px; background: linear-gradient(135deg, rgba(107, 182, 255, 0.1), rgba(74, 144, 226, 0.1)); border-radius: 50%; z-index: -1;"></div>
+  </div>
 </ion-content>
