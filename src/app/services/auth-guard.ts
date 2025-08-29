@@ -2,9 +2,10 @@
 
 import { Injectable } from '@angular/core';
 import { CanActivate, Router } from '@angular/router';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Auth } from '@angular/fire/auth';
 import { Observable } from 'rxjs';
 import { map, take } from 'rxjs/operators';
+import { onAuthStateChanged } from 'firebase/auth';
 
 @Injectable({
   providedIn: 'root'
@@ -12,13 +13,16 @@ import { map, take } from 'rxjs/operators';
 export class AuthGuard implements CanActivate {
 
   constructor(
-    private afAuth: AngularFireAuth,
+    private auth: Auth,
     private router: Router
   ) {}
 
   canActivate(): Observable<boolean> {
     // Cek status login dari Firebase secara real-time
-    return this.afAuth.authState.pipe(
+    return new Observable((subscriber) => {
+      const unsub = onAuthStateChanged(this.auth, (u) => subscriber.next(u), (e) => subscriber.error(e));
+      return () => unsub();
+    }).pipe(
       take(1), // Ambil status terkini sekali saja
       map(user => {
         if (user) {

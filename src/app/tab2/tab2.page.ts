@@ -5,6 +5,8 @@ import { Router } from '@angular/router';
 import { AuthService } from '../services/auth.service';
 import { Observable } from 'rxjs'; // <-- Import Observable
 import { switchMap } from 'rxjs/operators'; // <-
+import { firstValueFrom } from 'rxjs';
+import { NotificationService } from '../services/notification.service';
 
 @Component({
   selector: 'app-tab2',
@@ -21,7 +23,8 @@ export class Tab2Page implements OnInit {
   constructor(
     public authService: AuthService,
     private router: Router,
-    private alertController: AlertController
+    private alertController: AlertController,
+    public notificationService: NotificationService
   ) {
     // Mengambil data profil berdasarkan status login
     this.userProfile$ = this.authService.currentUser$.pipe(
@@ -179,6 +182,22 @@ export class Tab2Page implements OnInit {
       buttons: ['Tutup']
     });
     await alert.present();
+  }
+
+  // Kirim notifikasi uji ke Firestore
+  async createTestNotification() {
+    try {
+      const user = await firstValueFrom(this.authService.currentUser$);
+      if (!user) {
+        await this.showAlert('Silakan login terlebih dahulu untuk mengirim notifikasi tes.');
+        return;
+      }
+      await this.notificationService.addNotification(user.uid, 'Tes Notifikasi', 'Notifikasi ini dibuat dari Tab2.');
+      await this.showAlert('✅ Notifikasi tes berhasil dikirim. Cek halaman Notifikasi.');
+    } catch (e) {
+      console.error('Gagal membuat notifikasi tes', e);
+      await this.showAlert('❌ Gagal membuat notifikasi tes. Lihat console untuk detail.');
+    }
   }
 
   async security() {

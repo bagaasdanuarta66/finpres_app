@@ -1,6 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { Observable, of, firstValueFrom } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { AuthService } from '../services/auth.service';
+import { NotificationService, NotificationItem } from '../services/notification.service';
 
 // Interface dari kode Anda, ini sudah sangat bagus!
 interface QuickAction {
@@ -25,6 +29,10 @@ interface Program {
   standalone: false,
 })
 export class Tab1Page implements OnInit {
+  // Profile pengguna dari Firestore
+  userProfile$!: Observable<any | null>;
+  unreadCount$!: Observable<number>;
+  latestNotifications$!: Observable<NotificationItem[]>;
   // Data untuk "Menu Utama"
   quickActions: QuickAction[] = [
     { id: 'campaign', icon: '💰', title: 'Campaign' },
@@ -55,20 +63,28 @@ export class Tab1Page implements OnInit {
 
   constructor(
     private alertController: AlertController,
-    private router: Router
+    private router: Router,
+    private authService: AuthService,
+    private notificationService: NotificationService
   ) {}
 
   ngOnInit() {
-    // Logic inisialisasi bisa ditambahkan di sini
+    // Ambil profil user saat ini dari Firestore
+    this.userProfile$ = this.authService.currentUser$.pipe(
+      switchMap(user => user ? this.authService.getUserProfile(user.uid) : of(null))
+    );
+
+    // Stream unread count dan daftar notifikasi terbaru (maks 10)
+    this.unreadCount$ = this.authService.currentUser$.pipe(
+      switchMap(user => user ? this.notificationService.getUnreadCount(user.uid) : of(0))
+    );
+    this.latestNotifications$ = this.authService.currentUser$.pipe(
+      switchMap(user => user ? this.notificationService.getUserNotifications(user.uid, 10) : of([]))
+    );
   }
 
-  async showNotifications() {
-    const alert = await this.alertController.create({
-      header: 'Notifikasi',
-      message: 'Anda memiliki 3 notifikasi baru.',
-      buttons: ['Tutup']
-    });
-    await alert.present();
+  goToNotifications() {
+    this.router.navigate(['/tabs/notifications']);
   }
 
   // FUNGSI INI DIPERBAIKI
@@ -112,5 +128,12 @@ navigateTo(pageId: string) {
       buttons: ['OK']
     });
     await alert.present();
+  }
+
+  // Helper untuk avatar inisial
+  getInitials(name?: string): string {
+    if (!name) return 'U';
+    const parts = name.trim().split(/\s+/).slice(0, 2);
+    return parts.map(p => p.charAt(0)).join('').toUpperCase();
   }
 }

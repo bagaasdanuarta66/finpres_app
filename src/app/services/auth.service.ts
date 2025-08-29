@@ -1,49 +1,60 @@
 // src/app/services/auth.service.ts
 
 import { Injectable } from '@angular/core';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
-import { AngularFirestore } from '@angular/fire/compat/firestore'; // <-- 1. IMPORT INI
-import firebase from 'firebase/compat/app';
 import { Observable } from 'rxjs';
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from '@angular/fire/auth';
+import { Firestore, doc, setDoc, docData } from '@angular/fire/firestore';
 
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
 
-  currentUser$: Observable<firebase.User | null>;
+  currentUser$: Observable<any | null>;
 
   constructor(
-    private afAuth: AngularFireAuth,
-    private afs: AngularFirestore // <-- 2. INJECT INI
+    private auth: Auth,
+    private firestore: Firestore
   ) {
-    this.currentUser$ = this.afAuth.authState;
+    // Buat observable auth state secara manual agar tidak bergantung compat API
+    this.currentUser$ = new Observable((subscriber) => {
+      const unsub = onAuthStateChanged(this.auth, (user) => subscriber.next(user), (err) => subscriber.error(err));
+      return () => unsub();
+    });
   }
   // Fungsi untuk mengambil satu dokumen profil pengguna dari Firestore
   getUserProfile(userId: string) {
-    return this.afs.doc<any>(`users/${userId}`).valueChanges();
+    const ref = doc(this.firestore, 'users', userId);
+    return docData(ref, { idField: 'id' });
   }
 
   // 3. UBAH FUNGSI REGISTER MENJADI SEPERTI INI
   async register(email: string, password: string, profileData: any): Promise<any> {
     try {
       // Langkah 1: Buat akun di Authentication
-      const result = await this.afAuth.createUserWithEmailAndPassword(email, password);
+      const result = await createUserWithEmailAndPassword(this.auth, email, password);
       const user = result.user;
 
       if (user) {
+        console.log('[AuthService] Akan menulis profil ke Firestore:', {
+          path: `users/${user.uid}`,
+          email: user.email,
+          profileData
+        });
         // Langkah 2: Buat dokumen profil di Firestore
         // Dokumen ini akan disimpan di collection 'users' dengan ID yang sama dengan ID user
-        await this.afs.doc(`users/${user.uid}`).set({
+        await setDoc(doc(this.firestore, 'users', user.uid), {
           email: user.email,
           namaLengkap: profileData.namaLengkap,
           sekolah: profileData.sekolah,
-          poin: 0, // Beri poin awal saat mendaftar
+          poin: 0,
           createdAt: new Date()
         });
+        console.log('[AuthService] Penulisan profil ke Firestore BERHASIL untuk uid:', user.uid);
       }
       return result;
     } catch (error) {
+      console.error('[AuthService] Register GAGAL. Detail error dari Firebase/Firestore:', error);
       throw error;
     }
   }
@@ -51,7 +62,7 @@ export class AuthService {
   // Fungsi login dan logout tetap sama, tidak perlu diubah
   async login(email: string, password: string): Promise<any> {
     try {
-      const result = await this.afAuth.signInWithEmailAndPassword(email, password);
+      const result = await signInWithEmailAndPassword(this.auth, email, password);
       return result;
     } catch (error) {
       throw error;
@@ -59,6 +70,6 @@ export class AuthService {
   }
 
   async logout(): Promise<void> {
-    await this.afAuth.signOut();
+    await signOut(this.auth);
   }
 }

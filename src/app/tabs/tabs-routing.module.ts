@@ -40,6 +40,10 @@ const routes: Routes = [
         path: 'tab4', // Alamatnya akan otomatis menjadi /tabs/tab4
         loadChildren: () => import('../tab4/tab4.module').then(m => m.Tab4PageModule)
       },
+      {
+        path: 'notifications', // Halaman penuh notifikasi: /tabs/notifications
+        loadChildren: () => import('../notifications/notifications.module').then(m => m.NotificationsPageModule)
+      },
       // ... Rute tab lain jika ada
       {
         path: '', // Jika pengguna hanya mengakses /tabs, arahkan ke tab1

@@ -2,31 +2,32 @@
   <div style="max-width: 420px; margin: 0 auto; background: white; box-shadow: 0 0 30px rgba(74, 144, 226, 0.1); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
     
     <!-- HEADER -->
-    <div style="background: linear-gradient(135deg, #ffffff 0%, #FAFBFC 100%); padding: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); position: relative; overflow: hidden;">
+    <div style="background: linear-gradient(135deg, #ffffff 0%, #FAFBFC 100%); padding: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); border: 1px solid rgba(74, 144, 226, 0.2); position: relative;">
     
   <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #4A90E2, #6BB6FF);"></div>
   
-  <ng-container *ngIf="authService.currentUser$ | async as user">
+  <ng-container *ngIf="userProfile$ | async as profile">
 
     <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-      <div style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #4A90E2, #6BB6FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent; background-clip: text; letter-spacing: -0.5px;">
-        Sakuma
-      </div>
-      <button (click)="openSettings()" style="background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(74, 144, 226, 0.2); padding: 12px; border-radius: 50%; cursor: pointer; font-size: 16px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.1);">
-        ⚙️
-      </button>
+      <div style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #4A90E2, #6BB6FF); -webkit-background-clip: text; -webkit-text-fill-color: transparent;">Sakuma</div>
+      <button (click)="openSettings()" style="background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(74, 144, 226, 0.2); padding: 12px; border-radius: 50%; cursor: pointer; font-size: 16px;">⚙️</button>
     </div>
     
     <div style="text-align: center; position: relative;">
-      <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 48px; font-weight: bold; color: white; position: relative; box-shadow: 0 12px 32px rgba(74, 144, 226, 0.25);">
-        {{ getInitials(user.email) }}
+      <div style="width: 120px; height: 120px; border-radius: 50%; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; margin: 0 auto 20px; font-size: 48px; font-weight: bold; color: white;">
+        
+        {{ getInitials(profile.namaLengkap) }}
+        
         <button (click)="editAvatar()" style="position: absolute; bottom: 5px; right: 5px; background: white; color: #4A90E2; border: 2px solid #4A90E2; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 14px;">📷</button>
       </div>
-      <div style="font-size: 26px; font-weight: 700; color: #2C3E50; margin-bottom: 8px;">{{ user.email }}</div>
-      <div style="color: #5A6C7D; margin-bottom: 25px; font-size: 14px;">SMA Negeri 1 Jakarta • Kelas 11 IPA</div>
+
+      <div style="font-size: 26px; font-weight: 700; color: #2C3E50; margin-bottom: 8px;">{{ profile.namaLengkap }}</div>
+      
+      <div style="color: #5A6C7D; margin-bottom: 25px; font-size: 14px;">{{ profile.sekolah }}</div>
     </div>
   
-  </ng-container> </div>
+  </ng-container> 
+</div>
 
     <!-- MAIN CONTENT -->
     <div style="padding: 30px 20px 120px;">
@@ -151,6 +152,11 @@
           </div>
           <div style="color: #8B9DC3; font-size: 18px;">›</div>
           <div style="background: #e84393; color: white; width: 22px; height: 22px; border-radius: 50%; font-size: 11px; display: flex; align-items: center; justify-content: center; font-weight: 700; position: absolute; top: 8px; right: 8px; animation: badgePulse 2s infinite;">3</div>
+        </div>
+
+        <!-- Tombol: Buat Notifikasi Tes -->
+        <div style="padding: 16px 25px;">
+          <button (click)="createTestNotification()" style="width: 100%; background: #4A90E2; color: white; border: none; padding: 12px 16px; border-radius: 12px; font-weight: 700; letter-spacing: .3px; box-shadow: 0 6px 20px rgba(74,144,226,.25);">Buat Notifikasi Tes</button>
         </div>
         
         <div (click)="security()" style="padding: 20px 25px; border-bottom: 1px solid #E8F4FD; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: space-between;">

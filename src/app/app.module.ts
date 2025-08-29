@@ -9,10 +9,10 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-// Import yang dibutuhkan Firebase
-import { AngularFireModule } from '@angular/fire/compat';
-import { AngularFireAuthModule } from '@angular/fire/compat/auth';
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore'; // <-- Pastikan ini ada
+// Firebase (API modular)
+import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
+import { provideAuth, getAuth } from '@angular/fire/auth';
+import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 
 @NgModule({
@@ -20,15 +20,15 @@ import { environment } from '../environments/environment';
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
-    AppRoutingModule,
-    
-    // --- BAGIAN INI HARUS LENGKAP ---
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    AngularFireAuthModule,
-    AngularFirestoreModule // <-- Ini yang paling mungkin terlewat
-    // --------------------------------
+    AppRoutingModule
   ],
-  providers: [{ provide: RouteReuseStrategy, useClass: IonicRouteStrategy }],
+  providers: [
+    { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
+    // Firebase providers (modular)
+    provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
+    provideAuth(() => getAuth()),
+    provideFirestore(() => getFirestore())
+  ],
   bootstrap: [AppComponent],
 })
 export class AppModule {}

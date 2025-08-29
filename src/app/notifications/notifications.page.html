@@ -1,0 +1,57 @@
+<!-- src/app/notifications/notifications.page.html -->
+<ion-header>
+  <ion-toolbar>
+    <ion-title>
+      Notifikasi
+    </ion-title>
+    <ion-buttons slot="end">
+      <ion-badge color="danger">{{ (unreadCount$ | async) || 0 }}</ion-badge>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <ion-refresher slot="fixed">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+
+  <ng-container *ngIf="notifications$ | async as items; else loading">
+    <ion-list *ngIf="items.length; else empty">
+      <ion-item-sliding *ngFor="let n of items">
+        <ion-item [detail]="false">
+          <ion-label>
+            <h2>{{ n.title }}</h2>
+            <p *ngIf="n.message">{{ n.message }}</p>
+          </ion-label>
+          <ion-badge *ngIf="!n.read" color="danger">Baru</ion-badge>
+        </ion-item>
+        <ion-item-options side="end">
+          <ion-item-option color="primary" (click)="notificationService.markAsRead(n.id!)">
+            Tandai dibaca
+          </ion-item-option>
+        </ion-item-options>
+      </ion-item-sliding>
+    </ion-list>
+
+    <div style="padding: 24px" *ngIf="items.length">
+      <ion-button expand="block" (click)="markAllRead(items)">Tandai semua dibaca</ion-button>
+    </div>
+  </ng-container>
+
+  <ng-template #loading>
+    <ion-list>
+      <ion-item *ngFor="let s of [1,2,3,4]">
+        <ion-label>
+          <h2>Loading...</h2>
+          <p>&nbsp;</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+  </ng-template>
+
+  <ng-template #empty>
+    <div style="padding: 24px; text-align: center; color: var(--ion-color-medium);">
+      Belum ada notifikasi.
+    </div>
+  </ng-template>
+</ion-content>

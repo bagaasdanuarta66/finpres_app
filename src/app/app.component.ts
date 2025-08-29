@@ -1,7 +1,9 @@
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { AngularFireAuth } from '@angular/fire/compat/auth';
+import { Auth } from '@angular/fire/auth';
+import { onAuthStateChanged } from 'firebase/auth';
 import { take } from 'rxjs/operators';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-root',
@@ -11,14 +13,17 @@ import { take } from 'rxjs/operators';
 })
 export class AppComponent {
   constructor(
-    private afAuth: AngularFireAuth,
+    private auth: Auth,
     private router: Router
   ) {
     this.initializeApp();
   }
 
   initializeApp() {
-    this.afAuth.authState.pipe(take(1)).subscribe(user => {
+    new Observable((subscriber) => {
+      const unsub = onAuthStateChanged(this.auth, (u) => subscriber.next(u), (e) => subscriber.error(e));
+      return () => unsub();
+    }).pipe(take(1)).subscribe(user => {
       if (user) {
         // Jika ada pengguna yang login dari sesi sebelumnya,
         // langsung arahkan ke halaman utama.
