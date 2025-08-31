@@ -20,7 +20,15 @@ const routes: Routes = [
   {
     path: 'register',
     loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
-  }
+  },
+  {
+    path: 'admin/send-notification',
+    loadChildren: () => import('./admin/notification-sender/notification-sender.module').then( m => m.NotificationSenderPageModule)
+  },
+  {
+    path: 'notification-sender',
+    loadChildren: () => import('./admin/notification-sender/notification-sender.module').then( m => m.NotificationSenderPageModule)
+  },
   // Rute untuk aibantuan dan berita TIDAK PERLU di sini, 
   // karena mereka sudah menjadi "anak" dari 'tab1' di dalam tabs.router.module.ts
 ];

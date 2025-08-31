@@ -14,13 +14,20 @@ import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
+// Firebase compat (needed because NotificationSenderPage uses AngularFirestore from compat API)
+import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
+import { AngularFireModule } from '@angular/fire/compat';
 
 @NgModule({
   declarations: [AppComponent],
   imports: [
     BrowserModule,
     IonicModule.forRoot(),
-    AppRoutingModule
+    AppRoutingModule,
+    // Initialize AngularFire for compat API consumers (provides angularfire2.app.options)
+    AngularFireModule.initializeApp(environment.firebaseConfig),
+    // Provide compat Firestore for pages using AngularFirestore
+    AngularFirestoreModule
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
