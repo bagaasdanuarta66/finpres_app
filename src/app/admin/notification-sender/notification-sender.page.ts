@@ -1,7 +1,10 @@
+// src/app/admin/send-notification/notification-sender.page.ts
+
 import { Component } from '@angular/core';
-import { AngularFirestore } from '@angular/fire/compat/firestore';
 import { AlertController } from '@ionic/angular';
-import { firstValueFrom } from 'rxjs'; // <-- 1. TAMBAHKAN IMPORT INI
+
+// 1. IMPORT DIUBAH: Gunakan dari '@angular/fire/firestore'
+import { Firestore, collection, getDocs, writeBatch, doc } from '@angular/fire/firestore';
 
 @Component({
   selector: 'app-notification-sender',
@@ -14,8 +17,9 @@ export class NotificationSenderPage {
   notificationTitle: string = '';
   notificationMessage: string = '';
 
+  // 2. CONSTRUCTOR DIUBAH: Minta 'Firestore', bukan 'AngularFirestore'
   constructor(
-    private afs: AngularFirestore,
+    private firestore: Firestore, // <-- DIUBAH
     private alertController: AlertController
   ) { }
 
@@ -26,21 +30,25 @@ export class NotificationSenderPage {
     }
 
     try {
-      // 2. UBAH BARIS DI BAWAH INI
-      // dari: const usersSnapshot = await this.afs.collection('users').get().toPromise();
-      // menjadi:
-      const usersSnapshot = await firstValueFrom(this.afs.collection('users').get());
-      
+      // 3. CARA MENGAMBIL DATA DIUBAH
+      const usersCollectionRef = collection(this.firestore, 'users');
+      const usersSnapshot = await getDocs(usersCollectionRef);
+
       if (!usersSnapshot || usersSnapshot.empty) {
         this.showAlert('Info', 'Tidak ada pengguna yang terdaftar.');
         return;
       }
 
-      const batch = this.afs.firestore.batch();
+      // 4. CARA MEMBUAT BATCH DIUBAH
+      const batch = writeBatch(this.firestore);
+      const notificationsCollectionRef = collection(this.firestore, 'notifications');
 
       usersSnapshot.forEach(userDoc => {
         const userId = userDoc.id;
-        const notificationRef = this.afs.collection('notifications').doc().ref;
+
+        // 5. CARA MEMBUAT REFERENSI DOKUMEN BARU DIUBAH
+        const notificationRef = doc(notificationsCollectionRef); // Membuat doc baru dengan ID otomatis
+        
         const newNotification = {
           uid: userId,
           title: this.notificationTitle,

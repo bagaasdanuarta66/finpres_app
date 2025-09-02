@@ -9,14 +9,12 @@ import { IonicModule, IonicRouteStrategy } from '@ionic/angular';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 
-// Firebase (API modular)
+// Import-import yang dibutuhkan
 import { provideFirebaseApp, initializeApp } from '@angular/fire/app';
 import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
-// Firebase compat (needed because NotificationSenderPage uses AngularFirestore from compat API)
-import { AngularFirestoreModule } from '@angular/fire/compat/firestore';
-import { AngularFireModule } from '@angular/fire/compat';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [AppComponent],
@@ -24,14 +22,16 @@ import { AngularFireModule } from '@angular/fire/compat';
     BrowserModule,
     IonicModule.forRoot(),
     AppRoutingModule,
-    // Initialize AngularFire for compat API consumers (provides angularfire2.app.options)
-    AngularFireModule.initializeApp(environment.firebaseConfig),
-    // Provide compat Firestore for pages using AngularFirestore
-    AngularFirestoreModule
+
+    // HANYA HttpClientModule yang tetap di sini karena ia adalah sebuah 'NgModule'
+    HttpClientModule
   ],
   providers: [
     { provide: RouteReuseStrategy, useClass: IonicRouteStrategy },
-    // Firebase providers (modular)
+
+    // ==========================================================
+    // PINDAHKAN SEMUA FUNGSI provide... DARI FIREBASE KE SINI
+    // ==========================================================
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
     provideFirestore(() => getFirestore())

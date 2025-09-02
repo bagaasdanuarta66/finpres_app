@@ -1,4 +1,56 @@
-/* src/app/notifications/notifications.page.scss */
-:host {
-  display: block;
+// src/app/notifications/notifications.page.scss
+
+.notification-list {
+  background: transparent;
+  padding: 0;
+}
+
+.notification-item {
+  margin-bottom: 12px;
+  border-radius: 10px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.07);
+  overflow: hidden;
+
+  ion-item {
+    --padding-start: 16px;
+    --inner-padding-end: 16px;
+    --background: var(--ion-item-background, #fff);
+  }
+}
+
+.notification-icon {
+  font-size: 2rem;
+  margin-right: 12px;
+  color: var(--ion-color-primary);
+}
+
+.notification-title {
+  font-weight: 600;
+  color: var(--ion-color-primary);
+  margin-bottom: 4px;
+}
+
+.notification-message {
+  color: var(--ion-color-medium);
+  font-size: 0.9rem;
+  white-space: normal;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 60vh;
+  color: var(--ion-color-medium);
+
+  ion-icon {
+    font-size: 4rem;
+    margin-bottom: 16px;
+    color: var(--ion-color-primary-tint);
+  }
+  
+  h3 {
+    font-weight: bold;
+  }
 }

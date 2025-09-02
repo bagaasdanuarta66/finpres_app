@@ -1,57 +1,50 @@
-<!-- src/app/notifications/notifications.page.html -->
 <ion-header>
-  <ion-toolbar>
-    <ion-title>
+  <ion-toolbar color="primary"> <ion-title>
       Notifikasi
     </ion-title>
     <ion-buttons slot="end">
-      <ion-badge color="danger">{{ (unreadCount$ | async) || 0 }}</ion-badge>
+       <ion-badge color="danger" class="ion-margin-end">{{ (unreadCount$ | async) || 0 }}</ion-badge>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content>
-  <ion-refresher slot="fixed">
+<ion-content class="ion-padding"> <ion-refresher slot="fixed">
     <ion-refresher-content></ion-refresher-content>
   </ion-refresher>
 
   <ng-container *ngIf="notifications$ | async as items; else loading">
-    <ion-list *ngIf="items.length; else empty">
-      <ion-item-sliding *ngFor="let n of items">
-        <ion-item [detail]="false">
+    <ion-list *ngIf="items.length; else empty" class="notification-list">
+      <ion-item-sliding *ngFor="let n of items" class="notification-item">
+        <ion-item [detail]="false" lines="none">
+          <ion-icon name="notifications-circle" slot="start" color="primary" class="notification-icon"></ion-icon>
           <ion-label>
-            <h2>{{ n.title }}</h2>
-            <p *ngIf="n.message">{{ n.message }}</p>
+            <h2 class="notification-title">{{ n.title }}</h2>
+            <p *ngIf="n.message" class="notification-message">{{ n.message }}</p>
           </ion-label>
-          <ion-badge *ngIf="!n.read" color="danger">Baru</ion-badge>
+          <ion-badge *ngIf="!n.read" color="danger" slot="end">Baru</ion-badge>
         </ion-item>
         <ion-item-options side="end">
           <ion-item-option color="primary" (click)="notificationService.markAsRead(n.id!)">
-            Tandai dibaca
+            <ion-icon slot="icon-only" name="checkmark-circle"></ion-icon>
           </ion-item-option>
         </ion-item-options>
       </ion-item-sliding>
     </ion-list>
 
-    <div style="padding: 24px" *ngIf="items.length">
+    <div class="ion-padding" *ngIf="items.length">
       <ion-button expand="block" (click)="markAllRead(items)">Tandai semua dibaca</ion-button>
     </div>
   </ng-container>
 
   <ng-template #loading>
-    <ion-list>
-      <ion-item *ngFor="let s of [1,2,3,4]">
-        <ion-label>
-          <h2>Loading...</h2>
-          <p>&nbsp;</p>
-        </ion-label>
-      </ion-item>
-    </ion-list>
+    ...
   </ng-template>
 
   <ng-template #empty>
-    <div style="padding: 24px; text-align: center; color: var(--ion-color-medium);">
-      Belum ada notifikasi.
+    <div class="empty-state">
+      <ion-icon name="notifications-off-outline"></ion-icon>
+      <h3>Belum Ada Notifikasi</h3>
+      <p>Semua notifikasi baru akan muncul di sini.</p>
     </div>
   </ng-template>
 </ion-content>

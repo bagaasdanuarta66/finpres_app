@@ -1,6 +1,8 @@
+// src/app/app-routing.module.ts
+
 import { NgModule } from '@angular/core';
 import { PreloadAllModules, RouterModule, Routes } from '@angular/router';
-import { AuthGuard } from './services/auth-guard'; // <-- 1. IMPORT GUARD DI SINI
+import { AuthGuard } from './services/auth-guard';
 
 const routes: Routes = [
   {
@@ -11,7 +13,7 @@ const routes: Routes = [
   {
     path: 'tabs',
     loadChildren: () => import('./tabs/tabs.module').then(m => m.TabsPageModule),
-    canActivate: [AuthGuard] // <-- 2. TERAPKAN "SATPAM" DI SINI
+    canActivate: [AuthGuard]
   },
   {
     path: 'login',
@@ -22,15 +24,12 @@ const routes: Routes = [
     loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
   },
   {
+    // ===== BAGIAN YANG DIPERBAIKI =====
     path: 'admin/send-notification',
-    loadChildren: () => import('./admin/notification-sender/notification-sender.module').then( m => m.NotificationSenderPageModule)
-  },
-  {
-    path: 'notification-sender',
-    loadChildren: () => import('./admin/notification-sender/notification-sender.module').then( m => m.NotificationSenderPageModule)
-  },
-  // Rute untuk aibantuan dan berita TIDAK PERLU di sini, 
-  // karena mereka sudah menjadi "anak" dari 'tab1' di dalam tabs.router.module.ts
+    loadChildren: () => import('./admin/notification-sender/notification-sender.module').then( m => m.NotificationSenderPageModule),
+    canActivate: [AuthGuard] // <-- TAMBAHKAN SATPAM DI SINI
+  }
+  // Rute duplikat 'notification-sender' sudah dihapus karena tidak perlu
 ];
 
 @NgModule({
