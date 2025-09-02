@@ -167,39 +167,8 @@ export class Tab2Page implements OnInit {
   }
 
   async editProfile() {
-    const alert = await this.alertController.create({
-      header: '✏️ Edit Profile',
-      message: 'Ubah informasi:<br>• Nama lengkap<br>• Sekolah/universitas<br>• Bio singkat<br>• Kontak darurat<br>• Minat dan hobi',
-      buttons: ['Tutup']
-    });
-    await alert.present();
+ this.router.navigate(['/edit-profile']);
   }
-
-  async notifications() {
-    const alert = await this.alertController.create({
-      header: '🔔 Pengaturan Notifikasi',
-      message: 'Kustomisasi notifikasi:<br>• Program baru<br>• Update campaign<br>• Reminder deadline<br>• Achievement unlock',
-      buttons: ['Tutup']
-    });
-    await alert.present();
-  }
-
-  // Kirim notifikasi uji ke Firestore
-  async createTestNotification() {
-    try {
-      const user = await firstValueFrom(this.authService.currentUser$);
-      if (!user) {
-        await this.showAlert('Silakan login terlebih dahulu untuk mengirim notifikasi tes.');
-        return;
-      }
-      await this.notificationService.addNotification(user.uid, 'Tes Notifikasi', 'Notifikasi ini dibuat dari Tab2.');
-      await this.showAlert('✅ Notifikasi tes berhasil dikirim. Cek halaman Notifikasi.');
-    } catch (e) {
-      console.error('Gagal membuat notifikasi tes', e);
-      await this.showAlert('❌ Gagal membuat notifikasi tes. Lihat console untuk detail.');
-    }
-  }
-
   async security() {
     const alert = await this.alertController.create({
       header: '🔒 Keamanan Akun',
@@ -217,11 +186,16 @@ export class Tab2Page implements OnInit {
     });
     await alert.present();
   }
+ async logout() {
+ const profile = await firstValueFrom(this.userProfile$);
 
-async logout() {
+    // Buat pesan dinamis menggunakan nama dan email dari profil
+    // Menggunakan fallback 'Anda' jika namaLengkap tidak ada
+    const message = `Apakah Anda yakin ingin keluar dari akun ${profile?.namaLengkap || 'Anda'} (${profile?.email || ''})?`;
+
     const alert = await this.alertController.create({
       header: '🚪 Konfirmasi Logout',
-      message: 'Apakah Anda yakin ingin keluar dari akun Sakuma?',
+      message: message, // <-- Pesan dinamis digunakan di sini
       buttons: [
         {
           text: 'Batal',
@@ -236,7 +210,8 @@ async logout() {
               console.log('Pengguna berhasil logout dari Firebase!');
             } catch (error) {
               console.error('Gagal logout', error);
-              this.showAlert('Logout Gagal. Silakan coba lagi.');
+              // Anda sudah punya fungsi showAlert, kita bisa pakai itu
+              // this.showAlert('Logout Gagal. Silakan coba lagi.');
             }
           }
         }
@@ -246,21 +221,13 @@ async logout() {
   }
 
   async myPrograms() {
-    const alert = await this.alertController.create({
-      header: '🏆 Program Saya',
-      message: 'Kelola program:<br>• Program yang sedang diikuti<br>• Progress dan deadline<br>• Hasil dan sertifikat<br>• Riwayat program selesai',
-      buttons: ['Tutup']
-    });
-    await alert.present();
+    // Navigasi ke Tab 3
+    this.router.navigateByUrl('/tabs/tab3');
   }
 
   async myCampaigns() {
-    const alert = await this.alertController.create({
-      header: '💰 Campaign Saya',
-      message: 'Kelola campaign:<br>• Campaign yang dibuat<br>• Donasi yang diberikan<br>• Progress funding<br>• Update dan laporan',
-      buttons: ['Tutup']
-    });
-    await alert.present();
+    // Navigasi ke Tab 4
+    this.router.navigateByUrl('/tabs/tab4');
   }
 
   async savedItems() {

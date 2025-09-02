@@ -28,7 +28,11 @@ const routes: Routes = [
     path: 'admin/send-notification',
     loadChildren: () => import('./admin/notification-sender/notification-sender.module').then( m => m.NotificationSenderPageModule),
     canActivate: [AuthGuard] // <-- TAMBAHKAN SATPAM DI SINI
+  },  {
+    path: 'edit-profile',
+    loadChildren: () => import('./edit-profile/edit-profile.module').then( m => m.EditProfilePageModule)
   }
+
   // Rute duplikat 'notification-sender' sudah dihapus karena tidak perlu
 ];
 

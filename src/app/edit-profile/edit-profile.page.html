@@ -1,0 +1,46 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab2"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Edit Profil</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="saveProfile()">
+        <ion-icon slot="icon-only" name="save"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div *ngIf="isLoading; else formReady">
+    <ion-list>
+      <ion-item>
+        <ion-label position="stacked"><ion-skeleton-text animated style="width: 40%"></ion-skeleton-text></ion-label>
+        <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+      </ion-item>
+      <ion-item>
+        <ion-label position="stacked"><ion-skeleton-text animated style="width: 50%"></ion-skeleton-text></ion-label>
+        <ion-skeleton-text animated style="width: 100%"></ion-skeleton-text>
+      </ion-item>
+    </ion-list>
+  </div>
+
+  <ng-template #formReady>
+    <form [formGroup]="profileForm" (ngSubmit)="saveProfile()">
+      <ion-list>
+        <ion-item>
+          <ion-label position="stacked">Nama Lengkap</ion-label>
+          <ion-input formControlName="namaLengkap" type="text" placeholder="Masukkan nama lengkap Anda"></ion-input>
+        </ion-item>
+        
+        <ion-item>
+          <ion-label position="stacked">Sekolah / Universitas</ion-label>
+          <ion-input formControlName="sekolah" type="text" placeholder="Asal sekolah atau universitas"></ion-input>
+        </ion-item>
+
+      </ion-list>
+    </form>
+  </ng-template>
+
+</ion-content>
