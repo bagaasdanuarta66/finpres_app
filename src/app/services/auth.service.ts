@@ -1,15 +1,21 @@
 // src/app/services/auth.service.ts
 
 import { Injectable } from '@angular/core';
-import { Observable, of } from 'rxjs';
-import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, onAuthStateChanged } from '@angular/fire/auth';
+import { Observable, of, from } from 'rxjs';
+import { map, switchMap } from 'rxjs/operators';
+
+// Ganti import onAuthStateChanged dengan authState
+import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, authState } from '@angular/fire/auth';
 import { Firestore, doc, setDoc, docData, updateDoc } from '@angular/fire/firestore';
+import { Storage, ref, uploadString, getDownloadURL } from '@angular/fire/storage';
+import { Photo } from '@capacitor/camera';
 
 export interface UserProfile {
   uid: string;
   email: string;
   namaLengkap?: string;
   sekolah?: string;
+  photoURL?: string; // <-- Pastikan properti ini ada untuk fitur avatar
 }
 
 @Injectable({
@@ -17,17 +23,14 @@ export interface UserProfile {
 })
 export class AuthService {
 
-  currentUser$: Observable<any | null>;
+  // Cukup satu baris ini untuk mendapatkan status user secara real-time
+  currentUser$ = authState(this.auth);
 
   constructor(
     private auth: Auth,
-    private firestore: Firestore
-  ) {
-    this.currentUser$ = new Observable((subscriber) => {
-      const unsub = onAuthStateChanged(this.auth, (user) => subscriber.next(user));
-      return () => unsub();
-    });
-  }
+    private firestore: Firestore,
+    private storage: Storage
+  ) {}
 
   // FUNGSI INI DIPERBAIKI DENGAN TIPE KEMBALIAN
   getUserProfile(userId: string): Observable<UserProfile | null> {
@@ -42,6 +45,26 @@ export class AuthService {
       return await updateDoc(userDocRef, data);
     } catch (e) {
       console.error("Error updating document: ", e);
+      throw e;
+    }
+  }
+   async uploadAvatar(userId: string, cameraPhoto: Photo) {
+    // Tentukan path penyimpanan di Firebase Storage (folder avatars, nama file = uid.webp)
+    const path = `avatars/${userId}.webp`;
+    const storageRef = ref(this.storage, path);
+
+    try {
+      // Upload gambar (yang sudah dalam format base64) ke Firebase Storage
+      await uploadString(storageRef, cameraPhoto.base64String!, 'base64');
+
+      // Dapatkan URL publik dari gambar yang baru di-upload
+      const photoURL = await getDownloadURL(storageRef);
+
+      // Simpan URL tersebut ke profil pengguna di Firestore menggunakan fungsi yang sudah ada
+      return this.updateUserProfile(userId, { photoURL });
+
+    } catch (e) {
+      // Jika terjadi error, lemparkan agar bisa ditangani di halaman profil
       throw e;
     }
   }

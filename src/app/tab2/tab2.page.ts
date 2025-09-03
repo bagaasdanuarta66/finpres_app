@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 // Di bagian atas, bersama import lainnya
 import { AuthService } from '../services/auth.service';
@@ -7,6 +7,7 @@ import { Observable } from 'rxjs'; // <-- Import Observable
 import { switchMap } from 'rxjs/operators'; // <-
 import { firstValueFrom } from 'rxjs';
 import { NotificationService } from '../services/notification.service';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
 
 @Component({
   selector: 'app-tab2',
@@ -24,7 +25,9 @@ export class Tab2Page implements OnInit {
     public authService: AuthService,
     private router: Router,
     private alertController: AlertController,
-    public notificationService: NotificationService
+    public notificationService: NotificationService,
+  
+      private toastController: ToastController 
   ) {
     // Mengambil data profil berdasarkan status login
     this.userProfile$ = this.authService.currentUser$.pipe(
@@ -76,6 +79,49 @@ export class Tab2Page implements OnInit {
     await alert.present();
   }
 
+  async editAvatar() {
+    console.log('1. Tombol editAvatar berhasil di-klik!');
+    try {
+      const user = await firstValueFrom(this.authService.currentUser$);
+      
+      if (!user) {
+        console.log('2. Gagal karena tidak ada user yang login.');
+        this.presentToast('Anda harus login untuk mengganti foto.');
+        return;
+      }
+
+      console.log('3. User ditemukan. Akan memanggil Camera.getPhoto().');
+
+      // Membuka pilihan Kamera atau Galeri Foto
+      const image = await Camera.getPhoto({
+        quality: 90,
+        allowEditing: false,
+        resultType: CameraResultType.Base64,
+        source: CameraSource.Prompt
+      });
+
+      console.log('4. Foto BERHASIL dipilih!', image);
+
+      if (image) {
+        await this.authService.uploadAvatar(user.uid, image);
+        this.presentToast('Foto profil berhasil diperbarui!');
+      }
+
+    } catch (error) {
+      console.error('5. TERJADI ERROR DI DALAM FUNGSI:', error);
+      this.presentToast('Gagal memilih atau mengupload foto.');
+    }
+  }
+
+    async presentToast(message: string) {
+    const toast = await this.toastController.create({
+      message: message,
+      duration: 2000,
+      position: 'bottom'
+    });
+    toast.present();
+  }
+
   async openSettings() {
     const alert = await this.alertController.create({
       header: '⚙️ Pengaturan Aplikasi',
@@ -85,14 +131,6 @@ export class Tab2Page implements OnInit {
     await alert.present();
   }
 
-  async editAvatar() {
-    const alert = await this.alertController.create({
-      header: '📷 Edit Avatar',
-      message: 'Anda dapat:<br>• Ambil foto baru<br>• Pilih dari galeri<br>• Gunakan avatar default<br>• Tambah frame khusus',
-      buttons: ['Tutup']
-    });
-    await alert.present();
-  }
 
   async topUp() {
     const alert = await this.alertController.create({

@@ -15,6 +15,7 @@ import { provideAuth, getAuth } from '@angular/fire/auth';
 import { provideFirestore, getFirestore } from '@angular/fire/firestore';
 import { environment } from '../environments/environment';
 import { HttpClientModule } from '@angular/common/http';
+import { provideStorage, getStorage } from '@angular/fire/storage';
 
 @NgModule({
   declarations: [AppComponent],
@@ -34,7 +35,8 @@ import { HttpClientModule } from '@angular/common/http';
     // ==========================================================
     provideFirebaseApp(() => initializeApp(environment.firebaseConfig)),
     provideAuth(() => getAuth()),
-    provideFirestore(() => getFirestore())
+    provideFirestore(() => getFirestore()),
+     provideStorage(() => getStorage())
   ],
   bootstrap: [AppComponent],
 })
