@@ -1,14 +1,12 @@
-import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
-import { Router } from '@angular/router';
+// src/app/tab3/tab3.page.ts
 
-interface Campaign {
-  id: string;
-  title: string;
-  category: string;
-  trending?: boolean;
-  urgent?: boolean;
-}
+import { Component } from '@angular/core';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { switchMap } from 'rxjs/operators';
+import { AuthService } from '../services/auth.service';
+import { Firestore, collection, query, orderBy, collectionData } from '@angular/fire/firestore';
+import { AlertController,ToastController } from '@ionic/angular';
 
 @Component({
   selector: 'app-tab3',
@@ -16,97 +14,74 @@ interface Campaign {
   styleUrls: ['tab3.page.scss'],
   standalone: false,
 })
-export class Tab3Page implements OnInit {
+export class Tab3Page {
 
+  // Kita akan ambil semua campaign dari Firestore
+  public campaigns$: Observable<any[]>;
+
+  // Variabel untuk filter (akan kita fungsikan lebih lanjut nanti)
   activeFilter = 'semua';
-  campaigns: Campaign[] = [
-    { id: 'festival-sains', title: 'Festival Sains SMA Negeri 1 Jakarta', category: 'sekolah', trending: true },
-    { id: 'air-bersih', title: 'Proyek Penelitian Air Bersih', category: 'sains' },
-    { id: 'teater', title: 'Pentas Teater "Pahlawan Nusantara"', category: 'seni' },
-    { id: 'banjir', title: 'Bantuan Korban Banjir Jakarta', category: 'sosial', urgent: true }
-  ];
 
   constructor(
+    private router: Router,
+   public authService: AuthService, // <-- Dibuat 'public' agar bisa diakses dari HTML
+    private firestore: Firestore,
     private alertController: AlertController,
-    private router: Router
-  ) {}
-
-  ngOnInit() {
-    // Add any initialization logic here
+    private toastController: ToastController // Untuk fungsi placeholder
+  ) {
+    // Ambil data dari koleksi 'campaigns', urutkan dari yang terbaru
+    const campaignsRef = collection(this.firestore, 'campaigns');
+    const q = query(campaignsRef, orderBy('createdAt', 'desc'));
+    this.campaigns$ = collectionData(q, { idField: 'id' });
   }
 
+  // Fungsi filter, untuk saat ini hanya mengubah tampilan tombol
   filterCampaigns(category: string) {
     this.activeFilter = category;
+    // Logika filter data dari Firestore akan kita tambahkan nanti
   }
-
-  shouldShowCampaign(category: string): boolean {
-    if (this.activeFilter === 'semua') return true;
-    if (this.activeFilter === 'trending') {
-      const campaign = this.campaigns.find(c => c.category === category);
-      return campaign?.trending || false;
-    }
-    return this.activeFilter === category;
-  }
-
-  searchCampaigns(event: any) {
-    const searchTerm = event.target.value.toLowerCase();
-    // Implement search functionality here
-    console.log('Searching for:', searchTerm);
-  }
-
+  
+  // Fungsi untuk membuat campaign (akan kita buat halamannya nanti)
   async createCampaign() {
+    this.router.navigate(['/pages/add-campaign']); // Kita akan buat halaman ini
+  }
+
+   // --- TAMBAHKAN FUNGSI BARU INI UNTUK KONFIRMASI HAPUS ---
+  async confirmDeleteCampaign(campaign: any) {
     const alert = await this.alertController.create({
-      header: '🚀 Buat Campaign',
-      message: 'Form pembuatan campaign akan dibuka!<br><br>Anda dapat membuat campaign untuk:<br>• Kegiatan sekolah<br>• Proyek sosial<br>• Penelitian<br>• Event seni budaya',
-      buttons: ['Tutup']
+      header: 'Konfirmasi Hapus',
+      message: `Apakah Anda yakin ingin menghapus campaign "${campaign.title}"?`,
+      buttons: [
+        {
+          text: 'Batal',
+          role: 'cancel',
+        },
+        {
+          text: 'Hapus',
+          handler: async () => {
+            try {
+              await this.authService.deleteCampaign(campaign.id);
+              this.presentToast('Campaign berhasil dihapus.');
+            } catch (error) {
+              console.error('Gagal menghapus campaign', error);
+              this.presentToast('Gagal menghapus campaign. Coba lagi.');
+            }
+          },
+        },
+      ],
     });
+
     await alert.present();
   }
 
-  async viewCampaign(campaignId: string) {
-    const campaigns = {
-      'festival-sains': 'Festival Sains SMA Negeri 1 Jakarta',
-      'air-bersih': 'Proyek Penelitian Air Bersih',
-      'teater': 'Pentas Teater "Pahlawan Nusantara"',
-      'banjir': 'Bantuan Korban Banjir Jakarta'
-    };
-    
-    const alert = await this.alertController.create({
-      header: '📋 Detail Campaign',
-      message: `${campaigns[campaignId as keyof typeof campaigns]}<br><br>Anda akan melihat:<br>• Informasi lengkap<br>• Cara berdonasi<br>• Update progress<br>• Testimoni donatur`,
-      buttons: ['Tutup']
-    });
-    await alert.present();
-  }
-
-  navigateTo(page: string) {
-    switch(page) {
-      case 'home':
-        this.router.navigate(['/tabs/tab1']);
-        break;
-      case 'profile':
-        this.router.navigate(['/tabs/tab2']);
-        break;
-      default:
-        this.showAlert(`🚀 Navigasi ke halaman ${page}.\n\nDalam implementasi nyata, ini akan membuka halaman ${page}.`);
-        break;
-    }
-  }
-
-  async scanQR() {
-    const alert = await this.alertController.create({
-      header: 'Scan QR Code',
-      message: '📱 Fitur scan QR untuk donasi cepat',
-      buttons: ['Tutup']
-    });
-    await alert.present();
-  }
-
-  private async showAlert(message: string) {
-    const alert = await this.alertController.create({
+  // Fungsi helper untuk notifikasi
+  async presentToast(message: string) {
+    const toast = await this.toastController.create({
       message,
-      buttons: ['OK']
+      duration: 2000,
+      position: 'bottom',
     });
-    await alert.present();
+    toast.present();
   }
+
 }

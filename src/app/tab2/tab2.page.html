@@ -221,7 +221,11 @@
         <div style="color: #e84393; font-size: 18px;">›</div>
       </div>
     </div>
-    
+    <ion-fab vertical="bottom" horizontal="end" slot="fixed">
+    <ion-fab-button (click)="goToAddTransactionPage()">
+      <ion-icon name="add"></ion-icon>
+    </ion-fab-button>
+  </ion-fab>
     </div>
   </div>
 </ion-content>

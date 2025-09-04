@@ -1,0 +1,59 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab3"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Buat Campaign Baru</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="saveCampaign()">
+        Publikasikan
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="campaignForm">
+    <ion-list>
+      
+      <ion-item>
+        <ion-label position="stacked">Judul Campaign</ion-label>
+        <ion-input formControlName="title" type="text" placeholder="Contoh: Festival Coding Sakuma"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Deskripsi Singkat</ion-label>
+        <ion-textarea formControlName="description" placeholder="Jelaskan tujuan dari campaign Anda"></ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Target Dana (Rp)</ion-label>
+        <ion-input formControlName="targetDana" type="number" placeholder="Contoh: 10000000"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Kategori</ion-label>
+        <ion-select formControlName="category" placeholder="Pilih Kategori">
+          <ion-select-option value="sekolah">Sekolah</ion-select-option>
+          <ion-select-option value="sains">Sains</ion-select-option>
+          <ion-select-option value="seni">Seni</ion-select-option>
+          <ion-select-option value="sosial">Sosial</ion-select-option>
+        </ion-select>
+      </ion-item>
+      <ion-item lines="none">
+        <ion-label>Gambar Campaign</ion-label>
+      </ion-item>
+      
+      <div class="image-preview-container">
+        <img *ngIf="selectedImageData" [src]="selectedImageData" class="image-preview">
+        <ion-icon *ngIf="!selectedImageData" name="image-outline" class="image-placeholder"></ion-icon>
+      </div>
+
+      <ion-button expand="block" fill="outline" (click)="selectImage()">
+        <ion-icon slot="start" name="camera"></ion-icon>
+        Pilih Gambar
+      </ion-button>
+    
+    </ion-list>
+  </form>
+</ion-content>

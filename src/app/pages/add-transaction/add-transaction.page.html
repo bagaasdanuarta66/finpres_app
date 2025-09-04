@@ -1,0 +1,39 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab2"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Tambah Transaksi</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="saveTransaction()">
+        Simpan
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="transactionForm">
+    <ion-list>
+      
+      <ion-item>
+        <ion-label position="stacked">Deskripsi</ion-label>
+        <ion-input formControlName="description" type="text" placeholder="Contoh: Beli Makan Siang"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="stacked">Jumlah (Rp)</ion-label>
+        <ion-input formControlName="amount" type="number" placeholder="Contoh: 25000"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label>Tipe Transaksi</ion-label>
+        <ion-select formControlName="type" placeholder="Pilih Tipe">
+          <ion-select-option value="pemasukan">Pemasukan</ion-select-option>
+          <ion-select-option value="pengeluaran">Pengeluaran</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+    </ion-list>
+  </form>
+</ion-content>

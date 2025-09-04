@@ -276,4 +276,8 @@ export class Tab2Page implements OnInit {
     });
     await alert.present();
   }
+  // --- TAMBAHKAN FUNGSI BARU INI ---
+  goToAddTransactionPage() {
+    this.router.navigate(['/pages/add-transaction']);
+  }
 }

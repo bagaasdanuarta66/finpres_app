@@ -24,14 +24,41 @@ const routes: Routes = [
     loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
   },
   {
+    path: 'pages/add-transaction',
+    loadChildren: () => import('./pages/add-transaction/add-transaction.module').then( m => m.AddTransactionPageModule)
+  },
+   {
+    path: 'pages/add-program',
+    loadChildren: () => import('./pages/add-program/add-program.module').then( m => m.AddProgramPageModule)
+  },
+  {
+    path: 'pages/add-campaign',
+    loadChildren: () => import('./pages/add-campaign/add-campaign.module').then( m => m.AddCampaignPageModule)
+  },
+  {
     // ===== BAGIAN YANG DIPERBAIKI =====
     path: 'admin/send-notification',
     loadChildren: () => import('./admin/notification-sender/notification-sender.module').then( m => m.NotificationSenderPageModule),
     canActivate: [AuthGuard] // <-- TAMBAHKAN SATPAM DI SINI
-  },  {
+  },
+  {
     path: 'edit-profile',
     loadChildren: () => import('./edit-profile/edit-profile.module').then( m => m.EditProfilePageModule)
+  },
+  {
+    path: 'add-transaction',
+    loadChildren: () => import('./pages/add-transaction/add-transaction.module').then( m => m.AddTransactionPageModule)
+  },
+  {
+    path: 'add-program',
+    loadChildren: () => import('./pages/add-program/add-program.module').then( m => m.AddProgramPageModule)
+  },
+  {
+    path: 'add-campaign',
+    loadChildren: () => import('./pages/add-campaign/add-campaign.module').then( m => m.AddCampaignPageModule)
   }
+
+
 
   // Rute duplikat 'notification-sender' sudah dihapus karena tidak perlu
 ];
