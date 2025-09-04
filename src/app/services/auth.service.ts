@@ -1,21 +1,19 @@
 // src/app/services/auth.service.ts
 
 import { Injectable } from '@angular/core';
-import { Observable, of, from } from 'rxjs';
-import { map, switchMap } from 'rxjs/operators';
-
-// Ganti import onAuthStateChanged dengan authState
+import { Observable, of, firstValueFrom } from 'rxjs'; // 'firstValueFrom' ditambahkan
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, authState } from '@angular/fire/auth';
 import { Firestore, doc, setDoc, docData, updateDoc } from '@angular/fire/firestore';
-import { Storage, ref, uploadString, getDownloadURL } from '@angular/fire/storage';
 import { Photo } from '@capacitor/camera';
+import { HttpClient } from '@angular/common/http'; // <-- 1. IMPORT PENTING
 
+// Pastikan interface-nya lengkap
 export interface UserProfile {
   uid: string;
   email: string;
   namaLengkap?: string;
   sekolah?: string;
-  photoURL?: string; // <-- Pastikan properti ini ada untuk fitur avatar
+  photoURL?: string; // <-- 2. Pastikan properti ini ada
 }
 
 @Injectable({
@@ -23,50 +21,46 @@ export interface UserProfile {
 })
 export class AuthService {
 
-  // Cukup satu baris ini untuk mendapatkan status user secara real-time
   currentUser$ = authState(this.auth);
 
   constructor(
     private auth: Auth,
     private firestore: Firestore,
-    private storage: Storage
+    private http: HttpClient // <-- 3. Ganti 'Storage' dengan 'HttpClient'
   ) {}
 
-  // FUNGSI INI DIPERBAIKI DENGAN TIPE KEMBALIAN
+  // Fungsi uploadAvatar dengan logika Cloudinary
+  async uploadAvatar(userId: string, cameraPhoto: Photo) {
+    const CLOUD_NAME = "ds9q96pu8";
+    const UPLOAD_PRESET = "osuuj6cl"; // Nama preset "Unsigned" Anda
+
+    const url = `https://api.cloudinary.com/v1_1/${CLOUD_NAME}/image/upload`;
+
+    const base64Response = await fetch(`data:image/${cameraPhoto.format};base64,${cameraPhoto.base64String}`);
+    const photoBlob = await base64Response.blob();
+
+    const formData = new FormData();
+    formData.append('file', photoBlob);
+    formData.append('upload_preset', UPLOAD_PRESET);
+
+    try {
+      const response: any = await firstValueFrom(this.http.post(url, formData));
+      const photoURL = response.secure_url;
+      return this.updateUserProfile(userId, { photoURL });
+    } catch (e) {
+      console.error("Gagal meng-upload ke Cloudinary via API", e);
+      throw e;
+    }
+  }
+
   getUserProfile(userId: string): Observable<UserProfile | null> {
-    const ref = doc(this.firestore, 'users', userId);
+    const ref = doc(this.firestore, `users/${userId}`);
     return docData(ref, { idField: 'id' }) as Observable<UserProfile | null>;
   }
 
-  // HANYA ADA SATU FUNGSI UPDATE PROFIL
   async updateUserProfile(userId: string, data: any) {
     const userDocRef = doc(this.firestore, `users/${userId}`);
-    try {
-      return await updateDoc(userDocRef, data);
-    } catch (e) {
-      console.error("Error updating document: ", e);
-      throw e;
-    }
-  }
-   async uploadAvatar(userId: string, cameraPhoto: Photo) {
-    // Tentukan path penyimpanan di Firebase Storage (folder avatars, nama file = uid.webp)
-    const path = `avatars/${userId}.webp`;
-    const storageRef = ref(this.storage, path);
-
-    try {
-      // Upload gambar (yang sudah dalam format base64) ke Firebase Storage
-      await uploadString(storageRef, cameraPhoto.base64String!, 'base64');
-
-      // Dapatkan URL publik dari gambar yang baru di-upload
-      const photoURL = await getDownloadURL(storageRef);
-
-      // Simpan URL tersebut ke profil pengguna di Firestore menggunakan fungsi yang sudah ada
-      return this.updateUserProfile(userId, { photoURL });
-
-    } catch (e) {
-      // Jika terjadi error, lemparkan agar bisa ditangani di halaman profil
-      throw e;
-    }
+    return await updateDoc(userDocRef, data);
   }
 
   async register(email: string, password: string, profileData: any): Promise<any> {
