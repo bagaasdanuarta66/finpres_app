@@ -37,8 +37,14 @@
 
       <ion-item lines="none" style="--padding-start: 0; --inner-padding-end: 0; --background: transparent;">
         
-        <div style="background: white; border-radius: 20px; overflow: hidden; box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08); width: 100%;">
-            
+        <div style="background: rgba(255, 255, 255, 0.95); /* <-- Ganti 'white' dengan ini */
+            backdrop-filter: blur(20px); /* <-- Tambahkan ini */
+            border: 1px solid rgba(74, 144, 226, 0.2); /* <-- Tambahkan ini */
+            border-radius: 20px; 
+            padding: 25px; 
+            margin-bottom: 20px; 
+            box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); 
+            width: 100%;">
             <div [style.background-image]="'url(' + (campaign.imageUrl || 'assets/placeholder.png') + ')'" style="height: 160px; background-size: cover; background-position: center; position: relative;">
               <div *ngIf="campaign.trending === true" style="position: absolute; top: 12px; right: 12px; background: var(--ion-color-danger); color: white; padding: 5px 10px; border-radius: 15px; font-size: 10px; font-weight: 700;">TRENDING</div>
             </div>
