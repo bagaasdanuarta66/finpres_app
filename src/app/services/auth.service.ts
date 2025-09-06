@@ -59,10 +59,14 @@ export class AuthService {
     return this.updateUserProfile(userId, { photoURL });
   }
 
-  getUserProfile(userId: string): Observable<UserProfile | null> {
-    const ref = doc(this.firestore, `users/${userId}`);
-    return docData(ref, { idField: 'id' }) as Observable<UserProfile | null>;
-  }
+  // FUNGSI BARU YANG REAL-TIME
+getUserProfile(userId: string) {
+    const userDocRef = doc(this.firestore, `users/${userId}`);
+    // docData() akan terus 'mendengarkan' perubahan pada dokumen ini
+    // dan otomatis mengirimkan data terbaru setiap kali ada update.
+    return docData(userDocRef, { idField: 'id' });
+}
+
 
   async updateUserProfile(userId: string, data: any) {
     const userDocRef = doc(this.firestore, `users/${userId}`);
@@ -119,6 +123,7 @@ export class AuthService {
           email: user.email,
           namaLengkap: profileData.namaLengkap,
           sekolah: profileData.sekolah,
+          saldo: 0,
           poin: 0,
           createdAt: new Date()
         });

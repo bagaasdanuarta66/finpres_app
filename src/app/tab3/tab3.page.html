@@ -35,53 +35,49 @@
 
     <ion-item-sliding *ngFor="let campaign of campaigns">
 
-      <ion-item lines="none" style="--padding-start: 0; --inner-padding-end: 0; --background: transparent;">
-        
-        <div style="background: rgba(255, 255, 255, 0.95); /* <-- Ganti 'white' dengan ini */
-            backdrop-filter: blur(20px); /* <-- Tambahkan ini */
-            border: 1px solid rgba(74, 144, 226, 0.2); /* <-- Tambahkan ini */
+  <ion-item lines="none" style="--padding-start: 0; --inner-padding-end: 0; --background: transparent;">
+
+    <div style="width: 100%; 
+            background: rgba(255, 255, 255, 0.95); /* <-- Diubah */
+            backdrop-filter: blur(20px); /* <-- Ditambahkan */
+            border: 1px solid rgba(74, 144, 226, 0.2); /* <-- Ditambahkan */
             border-radius: 20px; 
-            padding: 25px; 
-            margin-bottom: 20px; 
-            box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); 
-            width: 100%;">
-            <div [style.background-image]="'url(' + (campaign.imageUrl || 'assets/placeholder.png') + ')'" style="height: 160px; background-size: cover; background-position: center; position: relative;">
-              <div *ngIf="campaign.trending === true" style="position: absolute; top: 12px; right: 12px; background: var(--ion-color-danger); color: white; padding: 5px 10px; border-radius: 15px; font-size: 10px; font-weight: 700;">TRENDING</div>
-            </div>
-
-            <div style="padding: 20px;">
-              <div style="font-size: 12px; color: #5A6C7D; margin-bottom: 8px; font-weight: 500;">Oleh: {{ campaign.creatorName }}</div>
-              <div style="font-size: 18px; font-weight: 700; color: #2C3E50; margin-bottom: 15px; line-height: 1.4;">{{ campaign.title }}</div>
-              <p style="font-size: 14px; color: #5A6C7D; margin-bottom: 20px; line-height: 1.5;">{{ campaign.description }}</p>
-              
-              <div style="margin-bottom: 15px;">
-                <div style="width: 100%; height: 8px; background: #E8F4FD; border-radius: 4px; overflow: hidden; margin-bottom: 8px;">
-                  <div [style.width.%]="(campaign.danaTerkumpul / campaign.targetDana) * 100" style="height: 100%; background: linear-gradient(90deg, #4A90E2, #6BB6FF); border-radius: 4px; transition: width 1s ease;"></div>
-                </div>
-                <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5A6C7D; font-weight: 500;">
-                  <span style="font-weight: 700; color: #4A90E2;">{{ campaign.danaTerkumpul | currency:'IDR':'Rp' }}</span>
-                  <span>{{ (campaign.danaTerkumpul / campaign.targetDana) * 100 | number:'1.0-0' }}%</span>
-                </div>
-              </div>
-              
-              <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid #E8F4FD;">
-                <div style="font-size: 12px; color: #5A6C7D; font-weight: 500;">Target: {{ campaign.targetDana | currency:'IDR':'Rp' }}</div>
-              </div>
-            </div>
+            overflow: hidden; 
+            box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); /* <-- Diubah */
+            position: relative;">
+      <div [style.background-image]="'url(' + (campaign.imageUrl || 'assets/placeholder.png') + ')'" style="height: 160px; background-size: cover; background-position: center; position: relative;">
+        <div *ngIf="campaign.trending === true" style="position: absolute; top: 12px; right: 12px; background: var(--ion-color-danger); color: white; padding: 5px 10px; border-radius: 15px; font-size: 10px; font-weight: 700;">TRENDING</div>
+      </div>
+      <div style="padding: 20px;">
+        <div style="font-size: 12px; color: #5A6C7D; margin-bottom: 8px; font-weight: 500;">Oleh: {{ campaign.creatorName }}</div>
+        <div style="font-size: 18px; font-weight: 700; color: #2C3E50; margin-bottom: 15px; line-height: 1.4;">{{ campaign.title }}</div>
+        <p style="font-size: 14px; color: #5A6C7D; margin-bottom: 20px; line-height: 1.5;">{{ campaign.description }}</p>
+        <div style="margin-bottom: 15px;">
+          <div style="width: 100%; height: 8px; background: #E8F4FD; border-radius: 4px; overflow: hidden; margin-bottom: 8px;">
+            <div [style.width.%]="(campaign.danaTerkumpul / campaign.targetDana) * 100" style="height: 100%; background: linear-gradient(90deg, #4A90E2, #6BB6FF); border-radius: 4px; transition: width 1s ease;"></div>
+          </div>
+          <div style="display: flex; justify-content: space-between; font-size: 12px; color: #5A6C7D; font-weight: 500;">
+            <span style="font-weight: 700; color: #4A90E2;">{{ campaign.danaTerkumpul | currency:'IDR':'Rp' }}</span>
+            <span>{{ (campaign.danaTerkumpul / campaign.targetDana) * 100 | number:'1.0-0' }}%</span>
+          </div>
         </div>
-      </ion-item>
+        <div style="display: flex; justify-content: space-between; align-items: center; padding-top: 15px; border-top: 1px solid #E8F4FD;">
+          <div style="font-size: 12px; color: #5A6C7D; font-weight: 500;">Target: {{ campaign.targetDana | currency:'IDR':'Rp' }}</div>
+        </div>
+      </div>
+    </div>
+  </ion-item>
 
-      <ion-item-options side="end">
-        <ion-item-option
-          *ngIf="campaign.userId === (authService.currentUser$ | async)?.uid"
-          color="danger"
-          (click)="confirmDeleteCampaign(campaign)">
-          <ion-icon slot="icon-only" name="trash"></ion-icon>
-        </ion-item-option>
-      </ion-item-options>
+  <ion-item-options side="end">
+    <ion-item-option
+      *ngIf="campaign.userId === (authService.currentUser$ | async)?.uid"
+      color="danger"
+      (click)="confirmDeleteCampaign(campaign)">
+      <ion-icon slot="icon-only" name="trash"></ion-icon>
+    </ion-item-option>
+  </ion-item-options>
 
-    </ion-item-sliding>
-
+</ion-item-sliding>
   </div>
 </ng-container>
 
