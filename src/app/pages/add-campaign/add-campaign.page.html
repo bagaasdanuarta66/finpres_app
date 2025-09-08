@@ -1,55 +1,56 @@
-<ion-header>
-  <ion-toolbar color="primary">
+<ion-header style="box-shadow: none;">
+  <ion-toolbar style="--background: linear-gradient(135deg, #ffffff 0%, #FAFBFC 100%); --border-width: 0; border-bottom: 1px solid rgba(74, 144, 226, 0.1);">
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/tabs/tab3"></ion-back-button>
+      <ion-back-button defaultHref="/tabs/tab3" style="--color: #4A90E2;"></ion-back-button>
     </ion-buttons>
-    <ion-title>Buat Campaign Baru</ion-title>
+    <ion-title style="font-weight: 700; color: #2C3E50;">Buat Campaign</ion-title>
     <ion-buttons slot="end">
-      <ion-button (click)="saveCampaign()">
+      <ion-button (click)="saveCampaign()" style="--color: #4A90E2; --padding-end: 10px; text-transform: none; font-weight: 600;">
         Publikasikan
       </ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <form [formGroup]="campaignForm">
-    <ion-list>
+<ion-content [fullscreen]="true" style="--background: linear-gradient(135deg, #f8fbff 0%, #e8f4fd 100%); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <form [formGroup]="campaignForm" style="padding: 20px;">
+    <ion-list style="background: transparent;">
       
-      <ion-item>
-        <ion-label position="stacked">Judul Campaign</ion-label>
-        <ion-input formControlName="title" type="text" placeholder="Contoh: Festival Coding Sakuma"></ion-input>
+      <ion-item lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 20px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px;">
+        <ion-label position="stacked" style="font-size: 12px; color: #5A6C7D; margin-bottom: 5px; font-weight: 500;">Judul Campaign</ion-label>
+        <ion-input formControlName="title" type="text" placeholder="Contoh: Festival Coding Sakuma" style="--color: #2C3E50; font-size: 16px;"></ion-input>
       </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Deskripsi Singkat</ion-label>
-        <ion-textarea formControlName="description" placeholder="Jelaskan tujuan dari campaign Anda"></ion-textarea>
+      <ion-item lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 20px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px;">
+        <ion-label position="stacked" style="font-size: 12px; color: #5A6C7D; margin-bottom: 5px; font-weight: 500;">Deskripsi Singkat</ion-label>
+        <ion-textarea formControlName="description" placeholder="Jelaskan tujuan dari campaign Anda" style="--color: #2C3E50; font-size: 16px;"></ion-textarea>
       </ion-item>
 
-      <ion-item>
-        <ion-label position="stacked">Target Dana (Rp)</ion-label>
-        <ion-input formControlName="targetDana" type="number" placeholder="Contoh: 10000000"></ion-input>
+      <ion-item lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 20px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px;">
+        <ion-label position="stacked" style="font-size: 12px; color: #5A6C7D; margin-bottom: 5px; font-weight: 500;">Target Dana (Rp)</ion-label>
+        <ion-input formControlName="targetDana" type="number" placeholder="Contoh: 10000000" style="--color: #2C3E50; font-size: 16px;"></ion-input>
       </ion-item>
 
-      <ion-item>
-        <ion-label>Kategori</ion-label>
-        <ion-select formControlName="category" placeholder="Pilih Kategori">
+      <ion-item lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 20px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px;">
+        <ion-label style="font-size: 12px; color: #5A6C7D; font-weight: 500;">Kategori</ion-label>
+        <ion-select formControlName="category" placeholder="Pilih Kategori" style="--placeholder-color: #a3b1c6; color: #2C3E50; font-size: 16px; width: 100%; max-width: 100%;">
           <ion-select-option value="sekolah">Sekolah</ion-select-option>
           <ion-select-option value="sains">Sains</ion-select-option>
           <ion-select-option value="seni">Seni</ion-select-option>
           <ion-select-option value="sosial">Sosial</ion-select-option>
         </ion-select>
       </ion-item>
-      <ion-item lines="none">
-        <ion-label>Gambar Campaign</ion-label>
+      
+      <ion-item lines="none" style="--background: transparent; --inner-padding-end: 0; --padding-start: 0;">
+        <ion-label style="font-size: 12px; color: #5A6C7D; font-weight: 500;">Gambar Campaign</ion-label>
       </ion-item>
       
-      <div class="image-preview-container">
-        <img *ngIf="selectedImageData" [src]="selectedImageData" class="image-preview">
-        <ion-icon *ngIf="!selectedImageData" name="image-outline" class="image-placeholder"></ion-icon>
+      <div style="width: 100%; height: 200px; border: 2px dashed #c0d9f7; border-radius: 15px; display: flex; align-items: center; justify-content: center; margin-bottom: 20px; background: rgba(232, 244, 253, 0.5); overflow: hidden;">
+        <img *ngIf="selectedImageData" [src]="selectedImageData" style="width: 100%; height: 100%; object-fit: cover;">
+        <ion-icon *ngIf="!selectedImageData" name="image-outline" style="font-size: 64px; color: #a3b1c6;"></ion-icon>
       </div>
 
-      <ion-button expand="block" fill="outline" (click)="selectImage()">
+      <ion-button expand="block" fill="outline" (click)="selectImage()" style="--border-color: #4A90E2; --border-radius: 25px; --color: #4A90E2; height: 50px; text-transform: none; font-weight: 600; font-size: 16px;">
         <ion-icon slot="start" name="camera"></ion-icon>
         Pilih Gambar
       </ion-button>

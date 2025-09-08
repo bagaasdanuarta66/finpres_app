@@ -1,23 +1,29 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>Admin: Kirim Notifikasi</ion-title>
+<ion-header style="box-shadow: none;">
+  <ion-toolbar style="--background: linear-gradient(135deg, #ffffff 0%, #FAFBFC 100%); --border-width: 0; border-bottom: 1px solid rgba(74, 144, 226, 0.1);">
+    <ion-title style="font-weight: 700; color: #2C3E50;">Admin: Kirim Notifikasi</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <h3>Kirim Notifikasi ke Semua Pengguna</h3>
+<ion-content [fullscreen]="true" style="--background: linear-gradient(135deg, #f8fbff 0%, #e8f4fd 100%); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <div style="padding: 20px;">
+    
+    <h3 style="font-size: 20px; font-weight: 700; color: #2C3E50; margin-bottom: 25px; display: flex; align-items: center; gap: 10px;">
+      <span>📣</span>
+      <span>Kirim Notifikasi ke Semua Pengguna</span>
+    </h3>
 
-  <ion-item>
-    <ion-label position="floating">Judul Notifikasi</ion-label>
-    <ion-input type="text" [(ngModel)]="notificationTitle"></ion-input>
-  </ion-item>
+    <ion-item lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 20px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px;">
+      <ion-label position="floating" style="color: #5A6C7D; font-weight: 500;">Judul Notifikasi</ion-label>
+      <ion-input type="text" [(ngModel)]="notificationTitle" style="--color: #2C3E50; font-size: 16px;"></ion-input>
+    </ion-item>
 
-  <ion-item>
-    <ion-label position="floating">Isi Pesan</ion-label>
-    <ion-textarea [(ngModel)]="notificationMessage" rows="5"></ion-textarea>
-  </ion-item>
+    <ion-item lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 20px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px;">
+      <ion-label position="floating" style="color: #5A6C7D; font-weight: 500;">Isi Pesan</ion-label>
+      <ion-textarea [(ngModel)]="notificationMessage" rows="5" style="--color: #2C3E50; font-size: 16px;"></ion-textarea>
+    </ion-item>
 
-  <ion-button expand="block" (click)="sendNotificationToAllUsers()" class="ion-margin-top">
-    Kirim Sekarang
-  </ion-button>
+    <ion-button expand="block" (click)="sendNotificationToAllUsers()" style="--background: linear-gradient(135deg, #4A90E2, #6BB6FF); --border-radius: 25px; --box-shadow: 0 4px 16px rgba(74, 144, 226, 0.25); height: 50px; text-transform: none; font-size: 16px; font-weight: 600; margin-top: 20px;">
+      Kirim Sekarang
+    </ion-button>
+  </div>
 </ion-content>
