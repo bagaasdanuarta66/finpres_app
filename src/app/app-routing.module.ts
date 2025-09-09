@@ -36,6 +36,14 @@ const routes: Routes = [
     loadChildren: () => import('./pages/add-campaign/add-campaign.module').then( m => m.AddCampaignPageModule)
   },
   {
+  path: 'post-detail/:id',
+  loadChildren: () => import('./pages/post-detail/post-detail.module').then( m => m.PostDetailPageModule)
+},
+{
+  path: 'create-post',
+  loadChildren: () => import('./pages/create-post/create-post.module').then( m => m.CreatePostPageModule)
+},
+  {
     // ===== BAGIAN YANG DIPERBAIKI =====
     path: 'admin/send-notification',
     loadChildren: () => import('./admin/notification-sender/notification-sender.module').then( m => m.NotificationSenderPageModule),
@@ -56,7 +64,17 @@ const routes: Routes = [
   {
     path: 'add-campaign',
     loadChildren: () => import('./pages/add-campaign/add-campaign.module').then( m => m.AddCampaignPageModule)
+  },
+  {
+    path: 'post-detail',
+    loadChildren: () => import('./pages/post-detail/post-detail.module').then( m => m.PostDetailPageModule)
+  },
+  {
+    path: 'create-post',
+    loadChildren: () => import('./pages/create-post/create-post.module').then( m => m.CreatePostPageModule)
   }
+
+
 
 
 

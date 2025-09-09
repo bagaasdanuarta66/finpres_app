@@ -1,82 +1,66 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+import { Router } from '@angular/router';
+import { Observable } from 'rxjs';
+import { ContentService, NewsArticle, ForumPost  } from '../services/content.service';
 
-// Definisikan tipe data agar kode lebih rapi
-interface NewsArticle {
-  id: string;
-  icon: string;
-  badge: string;
-  title: string;
-  excerpt: string;
-  authorInitial: string;
-  authorName: string;
-  time: string;
-}
-
-interface ForumPost {
-  id: string;
-  authorInitial: string;
-  authorName: string;
-  authorSchool: string;
-  time: string;
-  title: string;
-  content: string;
-  likes: number;
-  comments: number;
-}
 
 @Component({
   selector: 'app-berita',
   templateUrl: 'berita.page.html',
   standalone: false,
 })
-export class BeritaPage {
+export class BeritaPage implements OnInit {
   
-  // Properti untuk mengontrol tab yang aktif di dalam halaman
   activeTab: 'news' | 'forum' = 'news';
 
-  // Data untuk berita
-  newsArticles: NewsArticle[] = [
-    { id: 'fisika', icon: '🏆', badge: 'PRESTASI', title: 'Siswa SMA Jakarta Raih Medali Emas Olimpiade Fisika Internasional', excerpt: 'Ahmad Ridwan dari SMA Negeri 8 Jakarta berhasil meraih medali emas...', authorInitial: 'AR', authorName: 'Admin Sakuma', time: '2 jam lalu' },
-    { id: 'air', icon: '🔬', badge: 'SAINS', title: 'Proyek Air Bersih Siswa SMA Bandung Jadi Solusi Desa', excerpt: 'Tim peneliti muda dari SMA Negeri 3 Bandung mengembangkan teknologi filter...', authorInitial: 'RP', authorName: 'Reporter', time: '4 jam lalu' },
-    { id: 'teater', icon: '🎨', badge: 'SENI', title: 'Festival Teater Siswa Nasional Hadirkan 50 Karya Terbaik', excerpt: 'Festival Teater Siswa Nasional 2025 menghadirkan 50 karya terbaik...', authorInitial: 'ST', authorName: 'Tim Seni', time: '6 jam lalu' }
-  ];
+  // Menyiapkan wadah dinamis untuk Berita
+  newsArticles$!: Observable<NewsArticle[]>;
+  
+  // Menyiapkan wadah dinamis untuk Forum
+  forumPosts$!: Observable<ForumPost[]>;
 
-  // Data untuk forum
-  forumPosts: ForumPost[] = [
-    { id: 'osn', authorInitial: 'RA', authorName: 'Rika Aprilia', authorSchool: 'SMA Negeri 5 Jakarta', time: '5 menit lalu', title: 'Bagaimana cara efektif belajar matematika untuk OSN?', content: 'Halo teman-teman! Saya sedang persiapan untuk OSN Matematika tingkat provinsi...', likes: 12, comments: 8 },
-    { id: 'coding', authorInitial: 'DF', authorName: 'Dani Firmansyah', authorSchool: 'SMA Plus Al-Azhar', time: '1 jam lalu', title: 'Review aplikasi belajar coding untuk pemula', content: 'Hai guys! Mau share pengalaman saya belajar coding selama 6 bulan terakhir...', likes: 23, comments: 15 }
-  ];
+  constructor(
+    private alertController: AlertController,
+    private router: Router,
+    private contentService: ContentService 
+  ) {}
 
-  constructor(private alertController: AlertController) {}
+  // Hanya ada SATU ngOnInit, ini adalah tempat yang benar
+  ngOnInit() {
+    // Memanggil service untuk mengambil data Berita dan Forum
+    this.newsArticles$ = this.contentService.getNewsArticles();
+    this.forumPosts$ = this.contentService.getForumPosts();
+  }
 
-  // Fungsi untuk mengganti tab antara Berita dan Forum
+  // --- Fungsi-fungsi di bawah ini tidak berubah ---
+
   switchTab(tabName: 'news' | 'forum') {
     this.activeTab = tabName;
   }
-
+  
   async createContent() {
     this.showAlert('✍️', 'Fitur "Buat Konten" akan segera tersedia!');
   }
 
-  async createPost() {
-    this.showAlert('📝', 'Fitur "Buat Post Forum Baru" akan segera hadir!');
-  }
+  createPost() {
+  // Menggunakan router untuk berpindah ke halaman formulir
+  this.router.navigate(['/create-post']);
+}
   
   async viewArticle(article: NewsArticle) {
     this.showAlert('📖', `Membaca artikel: ${article.title}`);
   }
 
-  async viewPost(post: ForumPost) {
-    this.showAlert('💭', `Membuka diskusi: ${post.title}`);
-  }
-
-  // Helper function untuk menampilkan alert
+  viewPost(post: ForumPost) {
+  // Menggunakan router untuk navigasi ke halaman detail
+  // sambil mengirimkan ID unik dari postingan tersebut
+  this.router.navigate(['/post-detail', post.id]);
+}
+  
   private async showAlert(icon: string, message: string) {
     const alert = await this.alertController.create({
-      header: icon,
-      message: message,
-      buttons: ['OK']
+      header: icon, message: message, buttons: ['OK']
     });
     await alert.present();
   }

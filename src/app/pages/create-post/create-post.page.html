@@ -1,0 +1,40 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/berita"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Buat Postingan Baru</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="submitPost()" [disabled]="!postForm.valid">
+        Kirim
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="postForm">
+    <ion-list>
+      <ion-item>
+        <ion-input
+          label="Judul"
+          labelPlacement="floating"
+          placeholder="Tulis judul yang menarik"
+          formControlName="title"
+          required
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-textarea
+          label="Isi Postingan"
+          labelPlacement="floating"
+          placeholder="Tuliskan apa yang ada di pikiranmu..."
+          formControlName="content"
+          required
+          [autoGrow]="true"
+        ></ion-textarea>
+      </ion-item>
+    </ion-list>
+  </form>
+</ion-content>
