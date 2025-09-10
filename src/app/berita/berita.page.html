@@ -7,36 +7,61 @@
 </ion-header>
 
 <ion-content [fullscreen]="true" style="--background: linear-gradient(135deg, #f8fbff 0%, #e8f4fd 100%);">
-  <div style="max-width: 420px; margin: 0 auto; background: white; box-shadow: 0 0 30px rgba(74, 144, 226, 0.1); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
-    
-    <div style="background: linear-gradient(135deg, #ffffff 0%, #FAFBFC 100%); padding: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); position: relative; overflow: hidden;">
-      <div style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #EF4444, #10B981);"></div>
-      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
-        <div style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #EF4444, #10B981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px;">📰 News & Forum</div>
-        <button (click)="createContent()" style="background: linear-gradient(135deg, #4A90E2, #6BB6FF); color: white; border: none; padding: 12px 20px; border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 16px rgba(74,144,226,0.15);">+ Buat Konten</button>
+  <div
+    style="max-width: 420px; margin: 0 auto; background: white; box-shadow: 0 0 30px rgba(74, 144, 226, 0.1); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+
+    <div
+      style="background: linear-gradient(135deg, #ffffff 0%, #FAFBFC 100%); padding: 20px; border-radius: 0 0 30px 30px; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); backdrop-filter: blur(10px); border: 1px solid rgba(74, 144, 226, 0.2); position: relative; overflow: hidden;">
+      <div
+        style="position: absolute; top: 0; left: 0; right: 0; height: 2px; background: linear-gradient(90deg, #EF4444, #10B981);">
       </div>
-      
-      <div style="display: flex; background: rgba(255,255,255,0.95); border: 1px solid rgba(74,144,226,0.2); border-radius: 25px; padding: 5px; box-shadow: 0 8px 32px rgba(74,144,226,0.1);">
-        <button (click)="switchTab('news')" [style.background]="activeTab === 'news' ? 'white' : 'none'" [style.color]="activeTab === 'news' ? '#4A90E2' : '#5A6C7D'" [style.box-shadow]="activeTab === 'news' ? '0 4px 16px rgba(74,144,226,0.1)' : 'none'" style="flex: 1; border: none; padding: 12px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">📰 Berita</button>
-        <button (click)="switchTab('forum')" [style.background]="activeTab === 'forum' ? 'white' : 'none'" [style.color]="activeTab === 'forum' ? '#4A90E2' : '#5A6C7D'" [style.box-shadow]="activeTab === 'forum' ? '0 4px 16px rgba(74,144,226,0.1)' : 'none'" style="flex: 1; border: none; padding: 12px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">💬 Forum</button>
+      <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+        <div
+          style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #EF4444, #10B981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px;">
+          📰 News & Forum</div>
+        <button (click)="createContent()"
+          style="background: linear-gradient(135deg, #4A90E2, #6BB6FF); color: white; border: none; padding: 12px 20px; border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 16px rgba(74,144,226,0.15);">+
+          Buat Konten</button>
+      </div>
+
+      <div
+        style="display: flex; background: rgba(255,255,255,0.95); border: 1px solid rgba(74,144,226,0.2); border-radius: 25px; padding: 5px; box-shadow: 0 8px 32px rgba(74,144,226,0.1);">
+        <button (click)="switchTab('news')" [style.background]="activeTab === 'news' ? 'white' : 'none'"
+          [style.color]="activeTab === 'news' ? '#4A90E2' : '#5A6C7D'"
+          [style.box-shadow]="activeTab === 'news' ? '0 4px 16px rgba(74,144,226,0.1)' : 'none'"
+          style="flex: 1; border: none; padding: 12px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">📰
+          Berita</button>
+        <button (click)="switchTab('forum')" [style.background]="activeTab === 'forum' ? 'white' : 'none'"
+          [style.color]="activeTab === 'forum' ? '#4A90E2' : '#5A6C7D'"
+          [style.box-shadow]="activeTab === 'forum' ? '0 4px 16px rgba(74,144,226,0.1)' : 'none'"
+          style="flex: 1; border: none; padding: 12px 20px; border-radius: 20px; font-size: 14px; font-weight: 600; cursor: pointer; transition: all 0.3s ease;">💬
+          Forum</button>
       </div>
     </div>
 
     <div style="padding: 30px 20px 100px 20px;">
-      
+
       <div [hidden]="activeTab !== 'news'">
         <div class="news-grid" style="display: flex; flex-direction: column; gap: 20px;">
-          <div *ngFor="let article of newsArticles$ | async" (click)="viewArticle(article)" style="background: rgba(255,255,255,0.95); border: 1px solid rgba(74,144,226,0.2); border-radius: 20px; overflow: hidden; box-shadow: 0 8px 32px rgba(74,144,226,0.1); cursor: pointer;">
-            <div style="width: 100%; height: 140px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; color: white; font-size: 42px; position: relative;">
+          <div *ngFor="let article of newsArticles$ | async" (click)="viewArticle(article)"
+            style="background: rgba(255,255,255,0.95); border: 1px solid rgba(74,144,226,0.2); border-radius: 20px; overflow: hidden; box-shadow: 0 8px 32px rgba(74,144,226,0.1); cursor: pointer;">
+            <div
+              style="width: 100%; height: 140px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; color: white; font-size: 42px; position: relative;">
               {{ article.icon }}
-              <div *ngIf="article.badge" style="position: absolute; top: 12px; left: 12px; background: #fdcb6e; color: white; padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 700;">{{ article.badge }}</div>
+              <div *ngIf="article.badge"
+                style="position: absolute; top: 12px; left: 12px; background: #fdcb6e; color: white; padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 700;">
+                {{ article.badge }}</div>
             </div>
             <div style="padding: 20px;">
-              <div style="font-size: 16px; font-weight: 700; color: #2C3E50; margin-bottom: 8px;">{{ article.title }}</div>
-              <div style="font-size: 14px; color: #5A6C7D; line-height: 1.5; margin-bottom: 15px;">{{ article.excerpt }}</div>
-              <div style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #5A6C7D;">
+              <div style="font-size: 16px; font-weight: 700; color: #2C3E50; margin-bottom: 8px;">{{ article.title }}
+              </div>
+              <div style="font-size: 14px; color: #5A6C7D; line-height: 1.5; margin-bottom: 15px;">{{ article.excerpt }}
+              </div>
+              <div
+                style="display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: #5A6C7D;">
                 <div style="display: flex; align-items: center; gap: 8px;">
-                  <div style="width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #fdcb6e, #fab1a0); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: 700;">
+                  <div
+                    style="width: 24px; height: 24px; border-radius: 50%; background: linear-gradient(135deg, #fdcb6e, #fab1a0); display: flex; align-items: center; justify-content: center; color: white; font-size: 10px; font-weight: 700;">
                     {{ article.authorName.charAt(0).toUpperCase() }}
                   </div>
                   <span>{{ article.authorName }}</span>
@@ -49,34 +74,55 @@
       </div>
 
       <div [hidden]="activeTab !== 'forum'">
-        <div *ngFor="let post of forumPosts$ | async" (click)="viewPost(post)" style="background: rgba(255,255,255,0.95); border: 1px solid rgba(74,144,226,0.2); border-radius: 15px; padding: 20px; cursor: pointer; margin-bottom: 15px; box-shadow: 0 8px 32px rgba(74,144,226,0.1);">
-          <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
-            <div style="display: flex; align-items: center; gap: 10px;">
-              <div style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #10B981, #34D399); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 700;">
-                {{ post.authorName.charAt(0).toUpperCase() }}
+        <!-- PERBAIKAN #2: Menambahkan margin-bottom agar ada spasi antar kartu -->
+        <ion-item-sliding *ngFor="let post of forumPosts$ | async" style="margin-bottom: 15px;">
+
+          <!-- PERBAIKAN #1: Menambahkan inline style untuk membuat background transparan -->
+          <ion-item (click)="viewPost(post)" lines="none"
+            style="--background: transparent; --border-width: 0px; --padding-start: 0; --inner-padding-end: 0;">
+
+            <div
+              style="background: rgba(255,255,255,0.95); border: 1px solid rgba(74,144,226,0.2); border-radius: 15px; padding: 20px; cursor: pointer; width: 100%; box-shadow: 0 8px 32px rgba(74,144,226,0.1);">
+
+              <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 12px;">
+                <div style="display: flex; align-items: center; gap: 10px;">
+                  <div
+                    style="width: 32px; height: 32px; border-radius: 50%; background: linear-gradient(135deg, #10B981, #34D399); display: flex; align-items: center; justify-content: center; color: white; font-size: 12px; font-weight: 700;">
+                    {{ post.authorName.charAt(0).toUpperCase() }}
+                  </div>
+                  <div>
+                    <h4 style="font-size: 14px; color: #2C3E50; margin: 0 0 2px 0;">{{ post.authorName }}</h4>
+                    <span style="font-size: 11px; color: #5A6C7D;">{{ post.authorSchool }}</span>
+                  </div>
+                </div>
+                <div style="font-size: 11px; color: #5A6C7D;">
+                  {{ post.createdAt.toDate() | date:'shortTime' }}
+                </div>
               </div>
-              <div>
-                <h4 style="font-size: 14px; color: #2C3E50; margin: 0 0 2px 0;">{{ post.authorName }}</h4>
-                <span style="font-size: 11px; color: #5A6C7D;">{{ post.authorSchool }}</span>
+              <div style="font-size: 15px; font-weight: 600; color: #2C3E50; margin-bottom: 8px;">{{ post.title }}</div>
+              <div style="font-size: 13px; color: #5A6C7D; line-height: 1.4; margin-bottom: 15px;">{{ post.content }}
+              </div>
+              <div style="display: flex; justify-content: space-between; align-items: center;">
+                <div style="display: flex; gap: 15px; font-size: 11px; color: #5A6C7D;">
+                  <div (click)="onLike(post, $event)"
+                    style="display: flex; align-items: center; gap: 4px; cursor: pointer;"
+                    [style.color]="post.likedBy?.includes(currentUser?.uid || '') ? '#4A90E2' : '#5A6C7D'">
+                    <span [style.transform]="post.likedBy?.includes(currentUser?.uid || '') ? 'scale(1.2)' : 'scale(1)'"
+                      style="transition: transform 0.2s ease;">👍</span>
+                    <span>{{ post.likes }}</span>
+                  </div>
+                  <div style="display: flex; align-items: center; gap: 4px;"><span>💬</span><span>{{ post.comments
+                      }}</span></div>
+                </div>
               </div>
             </div>
-            <div style="font-size: 11px; color: #5A6C7D;">
-              {{ post.createdAt.toDate() | date:'shortTime' }}
-            </div>
-          </div>
-          <div style="font-size: 15px; font-weight: 600; color: #2C3E50; margin-bottom: 8px;">{{ post.title }}</div>
-          <div style="font-size: 13px; color: #5A6C7D; line-height: 1.4; margin-bottom: 15px;">{{ post.content }}</div>
-          <div style="display: flex; justify-content: space-between; align-items: center;">
-            <div style="display: flex; gap: 15px; font-size: 11px; color: #5A6C7D;">
-              <div style="display: flex; align-items: center; gap: 4px;"><span>👍</span><span>{{ post.likes }}</span></div>
-              <div style="display: flex; align-items: center; gap: 4px;"><span>💬</span><span>{{ post.comments }}</span></div>
-            </div>
-          </div>
-        </div>
+          </ion-item>
+
+          <ion-item-options side="end">
+            <ion-item-option *ngIf="currentUser?.uid === post.authorId" color="danger" (click)="deletePost(post.id)">
+              <ion-icon slot="icon-only" name="trash"></ion-icon>
+            </ion-item-option>
+          </ion-item-options>
+
+        </ion-item-sliding>
       </div>
-
-    </div>
-
-    <button *ngIf="activeTab === 'forum'" (click)="createPost()" style="position: fixed; bottom: 90px; right: 20px; background: linear-gradient(135deg, #10B981, #34D399); color: white; width: 50px; height: 50px; border-radius: 50%; border: none; font-size: 24px; cursor: pointer; box-shadow: 0 8px 24px rgba(16, 185, 129, 0.4); z-index: 999; display: flex; align-items: center; justify-content: center;">+</button>
-  </div>
-</ion-content>
