@@ -2,6 +2,8 @@
 import { Component, OnInit } from '@angular/core';
 import { AlertController } from '@ionic/angular';
 import { Router } from '@angular/router';
+import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { Capacitor } from '@capacitor/core';
 
 @Component({
   selector: 'app-tabs',
@@ -21,24 +23,56 @@ export class TabsPage implements OnInit {
   }
 
   async scanQR() {
-    const alert = await this.alertController.create({
-      header: '📱 QR Scanner',
-      message: 'Fitur scan QR untuk transaksi cepat.\n\nSilakan arahkan kamera ke QR code yang valid.',
-      buttons: [
-        {
-          text: 'Batal',
-          role: 'cancel'
-        },
-        {
-          text: 'Buka Kamera',
-          handler: () => {
-            console.log('Opening QR Scanner...');
-            this.showAlert('📱 Membuka kamera QR Scanner...');
-          }
+    try {
+      // Beri umpan balik awal agar pengguna tahu klik terdeteksi
+      await this.showAlert('Membuka kamera...');
+
+      const platform = Capacitor.getPlatform();
+
+      // Cek izin kamera sesuai platform
+      const perm = await Camera.checkPermissions();
+      if (perm.camera !== 'granted') {
+        const req = await Camera.requestPermissions();
+        if (req.camera !== 'granted') {
+          throw new Error('Izin kamera ditolak. Buka pengaturan aplikasi/peramban lalu izinkan kamera.');
         }
-      ]
-    });
-    await alert.present();
+      }
+
+      // Validasi khusus web: harus secure context (https/localhost) dan ada perangkat kamera
+      if (platform === 'web') {
+        // Pastikan secure context
+        const isSecure = window.isSecureContext || window.location.hostname === 'localhost';
+        if (!isSecure) {
+          throw new Error('Browser membutuhkan HTTPS atau localhost untuk mengakses kamera. Jalankan di https atau gunakan perangkat.');
+        }
+
+        // Coba cek ketersediaan kamera
+        if (!navigator.mediaDevices || !navigator.mediaDevices.getUserMedia) {
+          throw new Error('Perangkat kamera tidak tersedia di browser ini. Coba browser lain atau gunakan perangkat.');
+        }
+      }
+
+      // Langsung buka kamera
+      const photo = await Camera.getPhoto({
+        quality: 70,
+        allowEditing: false,
+        resultType: CameraResultType.Uri,
+        source: CameraSource.Camera
+      });
+
+      // Lakukan sesuatu dengan hasil foto jika diperlukan
+      // Contoh: tampilkan notifikasi sukses
+      await this.showAlert('\uD83D\uDCF7 Kamera terbuka dan foto berhasil diambil.');
+
+      // Jika Anda ingin menavigasi ke halaman pratinjau, lakukan di sini
+      // this.router.navigate(['/preview'], { state: { photo } });
+    } catch (err: any) {
+      // Pengguna mungkin membatalkan atau izin ditolak
+      console.warn('Camera action cancelled or failed', err);
+      // Tampilkan pesan agar pengguna tahu apa yang terjadi
+      const msg = typeof err?.message === 'string' ? err.message : 'Tidak dapat membuka kamera. Pastikan izin kamera diberikan dan coba lagi.';
+      await this.showAlert(msg);
+    }
   }
 
   async openProfile() {

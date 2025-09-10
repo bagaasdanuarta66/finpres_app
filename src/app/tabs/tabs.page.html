@@ -16,8 +16,8 @@
 
 
     <!-- QR Scanner (Center Button) -->
-    <ion-tab-button (click)="scanQR()">
-      <div class="scan-button">
+    <ion-tab-button tab="scan" (ionTabButtonClick)="scanQR()" (click)="$event.preventDefault(); scanQR();">
+      <div class="scan-button" role="button" tabindex="0" aria-label="Buka Kamera Scan">
         <!-- Ganti ion-icon di dalam tombol scan juga -->
         <span class="scan-emoji">📲</span>
       </div>
