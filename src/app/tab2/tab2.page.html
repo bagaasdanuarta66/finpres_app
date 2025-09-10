@@ -23,7 +23,7 @@
             {{ getInitials(profile.namaLengkap) }}
         </div>
 
-        <button (click)="editAvatar()" style="position: absolute; bottom: 5px; right: 5px; background: white; color: #4A90E2; border: 2px solid #4A90E2; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; padding: 0;">📷</button>
+        <button (click)="editAvatar()" style="position: absolute; bottom: 5px; right: 5px; background: white; color: #4A90E2; border: 2px solid #4A90E2; width: 35px; height: 35px; border-radius: 50%; cursor: pointer; font-size: 14px; display: flex; align-items: center; justify-content: center; padding: 0; margin: 0; outline: none;">📷</button>
 
     </div>
     <div style="font-size: 26px; font-weight: 700; color: #2C3E50; margin-bottom: 8px;">{{ profile.namaLengkap }}</div>
@@ -37,19 +37,19 @@
       
       <!-- Stats Grid -->
       <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; margin-bottom: 30px;">
-        <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(74, 144, 226, 0.2); padding: 20px 15px; border-radius: 20px; text-align: center; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); transition: all 0.3s ease; cursor: pointer;" (click)="viewPrograms()">
+        <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(74, 144, 226, 0.2); padding: 20px 15px; border-radius: 20px; text-align: center; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); transition: all 0.3s ease;">
           <span style="font-size: 28px; margin-bottom: 12px; display: block;">🏆</span>
           <span style="font-size: 22px; font-weight: 700; color: #4A90E2; margin-bottom: 6px; display: block;">15</span>
           <div style="font-size: 12px; color: #5A6C7D; font-weight: 500;">Program Selesai</div>
         </div>
         
-        <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(74, 144, 226, 0.2); padding: 20px 15px; border-radius: 20px; text-align: center; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); transition: all 0.3s ease; cursor: pointer;" (click)="viewPoints()">
+        <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(74, 144, 226, 0.2); padding: 20px 15px; border-radius: 20px; text-align: center; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); transition: all 0.3s ease;">
           <span style="font-size: 28px; margin-bottom: 12px; display: block;">⭐</span>
           <span style="font-size: 22px; font-weight: 700; color: #4A90E2; margin-bottom: 6px; display: block;">2,340</span>
           <div style="font-size: 12px; color: #5A6C7D; font-weight: 500;">Total Poin</div>
         </div>
         
-        <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(74, 144, 226, 0.2); padding: 20px 15px; border-radius: 20px; text-align: center; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); transition: all 0.3s ease; cursor: pointer;" (click)="viewStats()">
+        <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(74, 144, 226, 0.2); padding: 20px 15px; border-radius: 20px; text-align: center; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); transition: all 0.3s ease;">
           <span style="font-size: 28px; margin-bottom: 12px; display: block;">📈</span>
           <span style="font-size: 22px; font-weight: 700; color: #4A90E2; margin-bottom: 6px; display: block;">89%</span>
           <div style="font-size: 12px; color: #5A6C7D; font-weight: 500;">Tingkat Kelulusan</div>
@@ -69,20 +69,20 @@
             <!-- Saldo Card -->
             <div style="background: linear-gradient(135deg, #4A90E2, #6BB6FF); backdrop-filter: blur(20px); padding: 25px; border-radius: 20px; color: white; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.25);">
               <div style="font-size: 13px; opacity: 0.9; margin-bottom: 8px; font-weight: 500;">Saldo Sakuma</div>
-              <div style="font-size: 28px; font-weight: 700; margin-bottom: 20px;">Rp 250.000</div>
+              <div style="font-size: 28px; font-weight: 700; margin-bottom: 20px;">Rp 0</div>
               <div style="display: flex; gap: 12px;">
-                <button (click)="topUp()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 500; backdrop-filter: blur(10px);">Top Up</button>
-                <button (click)="viewHistory()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 500; backdrop-filter: blur(10px);">Riwayat</button>
+                <button style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 500; backdrop-filter: blur(10px);">Top Up</button>
+                <button style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 500; backdrop-filter: blur(10px);">Riwayat</button>
               </div>
             </div>
             
             <!-- Poin Card -->
             <div style="background: linear-gradient(135deg, #fdcb6e, #fab1a0); backdrop-filter: blur(20px); padding: 25px; border-radius: 20px; color: white; position: relative; overflow: hidden; box-shadow: 0 8px 32px rgba(253, 203, 110, 0.25);">
               <div style="font-size: 13px; opacity: 0.9; margin-bottom: 8px; font-weight: 500;">Poin Sakuma</div>
-              <div style="font-size: 28px; font-weight: 700; margin-bottom: 20px;">1.250 Poin</div>
+              <div style="font-size: 28px; font-weight: 700; margin-bottom: 20px;">0 Poin</div>
               <div style="display: flex; gap: 12px;">
-                <button (click)="convertPoints()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 500; backdrop-filter: blur(10px);">Konversi</button>
-                <button (click)="usePoints()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; cursor: pointer; font-weight: 500; backdrop-filter: blur(10px);">Gunakan</button>
+                <button style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 500; backdrop-filter: blur(10px);">Konversi</button>
+                <button style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 500; backdrop-filter: blur(10px);">Gunakan</button>
               </div>
             </div>
           </div>
@@ -98,27 +98,27 @@
           </div>
         </div>
         <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 15px; padding: 25px;">
-          <div style="text-align: center; padding: 20px 15px; border-radius: 15px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); color: white; box-shadow: 0 8px 24px rgba(74, 144, 226, 0.15); border: 2px solid white; transition: all 0.3s ease; cursor: pointer;" (click)="viewAchievement('first')">
+          <div style="text-align: center; padding: 20px 15px; border-radius: 15px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); color: white; box-shadow: 0 8px 24px rgba(74, 144, 226, 0.15); border: 2px solid white; transition: all 0.3s ease;">
             <span style="font-size: 28px; margin-bottom: 10px; display: block;">🎯</span>
             <div style="font-size: 11px; font-weight: 600;">First Step</div>
           </div>
-          <div style="text-align: center; padding: 20px 15px; border-radius: 15px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); color: white; box-shadow: 0 8px 24px rgba(74, 144, 226, 0.15); border: 2px solid white; transition: all 0.3s ease; cursor: pointer;" (click)="viewAchievement('consistent')">
+          <div style="text-align: center; padding: 20px 15px; border-radius: 15px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); color: white; box-shadow: 0 8px 24px rgba(74, 144, 226, 0.15); border: 2px solid white; transition: all 0.3s ease;">
             <span style="font-size: 28px; margin-bottom: 10px; display: block;">💪</span>
             <div style="font-size: 11px; font-weight: 600;">Konsisten</div>
           </div>
-          <div style="text-align: center; padding: 20px 15px; border-radius: 15px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); color: white; box-shadow: 0 8px 24px rgba(74, 144, 226, 0.15); border: 2px solid white; transition: all 0.3s ease; cursor: pointer;" (click)="viewAchievement('fire')">
+          <div style="text-align: center; padding: 20px 15px; border-radius: 15px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); color: white; box-shadow: 0 8px 24px rgba(74, 144, 226, 0.15); border: 2px solid white; transition: all 0.3s ease;">
             <span style="font-size: 28px; margin-bottom: 10px; display: block;">🔥</span>
             <div style="font-size: 11px; font-weight: 600;">On Fire</div>
           </div>
-          <div style="text-align: center; padding: 20px 15px; border-radius: 15px; background: #E8F4FD; transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent;" (click)="viewAchievement('champion')">
+          <div style="text-align: center; padding: 20px 15px; border-radius: 15px; background: #E8F4FD; transition: all 0.3s ease; border: 2px solid transparent;">
             <span style="font-size: 28px; margin-bottom: 10px; display: block;">👑</span>
             <div style="font-size: 11px; font-weight: 600;">Champion</div>
           </div>
-          <div style="text-align: center; padding: 20px 15px; border-radius: 15px; background: #E8F4FD; transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent;" (click)="viewAchievement('star')">
+          <div style="text-align: center; padding: 20px 15px; border-radius: 15px; background: #E8F4FD; transition: all 0.3s ease; border: 2px solid transparent;">
             <span style="font-size: 28px; margin-bottom: 10px; display: block;">🌟</span>
             <div style="font-size: 11px; font-weight: 600;">Star Player</div>
           </div>
-          <div style="text-align: center; padding: 20px 15px; border-radius: 15px; background: #E8F4FD; transition: all 0.3s ease; cursor: pointer; border: 2px solid transparent;" (click)="viewAchievement('legend')">
+          <div style="text-align: center; padding: 20px 15px; border-radius: 15px; background: #E8F4FD; transition: all 0.3s ease; border: 2px solid transparent;">
             <span style="font-size: 28px; margin-bottom: 10px; display: block;">🚀</span>
             <div style="font-size: 11px; font-weight: 600;">Legend</div>
           </div>
@@ -145,7 +145,7 @@
           <div style="color: #8B9DC3; font-size: 18px;">›</div>
         </div>
         
-        <div (click)="security()" style="padding: 20px 25px; border-bottom: 1px solid #E8F4FD; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: space-between;">
+        <div style="padding: 20px 25px; border-bottom: 1px solid #E8F4FD; transition: all 0.3s ease; display: flex; align-items: center; justify-content: space-between;">
           <div style="display: flex; align-items: center; gap: 18px;">
             <div style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; box-shadow: 0 6px 20px rgba(0, 184, 148, 0.1); background: linear-gradient(135deg, #00b894, #00cec9);">🔒</div>
             <div>
@@ -156,7 +156,7 @@
           <div style="color: #8B9DC3; font-size: 18px;">›</div>
         </div>
         
-        <div (click)="help()" style="padding: 20px 25px; border-bottom: 1px solid #E8F4FD; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: space-between;">
+        <div style="padding: 20px 25px; border-bottom: 1px solid #E8F4FD; transition: all 0.3s ease; display: flex; align-items: center; justify-content: space-between;">
           <div style="display: flex; align-items: center; gap: 18px;">
             <div style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; box-shadow: 0 6px 20px rgba(108, 92, 231, 0.1); background: linear-gradient(135deg, #6c5ce7, #a29bfe);">❓</div>
             <div>
@@ -199,7 +199,7 @@
           <div style="color: #8B9DC3; font-size: 18px;">›</div>
         </div>
         
-        <div (click)="savedItems()" style="padding: 20px 25px; cursor: pointer; transition: all 0.3s ease; display: flex; align-items: center; justify-content: space-between;">
+        <div style="padding: 20px 25px; transition: all 0.3s ease; display: flex; align-items: center; justify-content: space-between;">
           <div style="display: flex; align-items: center; gap: 18px;">
             <div style="width: 50px; height: 50px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; box-shadow: 0 6px 20px rgba(232, 67, 147, 0.1); background: linear-gradient(135deg, #e84393, #fd79a8);">❤️</div>
             <div>
