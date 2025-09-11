@@ -54,6 +54,11 @@ export class ContentService {
     const q = query(articlesRef, orderBy('createdAt', 'desc'));
     return collectionData(q, { idField: 'id' }) as Observable<NewsArticle[]>;
   }
+  //INI FUNGSI BARU YANG KITA BUTUHKAN
+  createArticle(dataToSave: any) {
+    const articlesRef = collection(this.firestore, 'articles');
+    return addDoc(articlesRef, dataToSave);
+  }
 
   getForumPosts(): Observable<ForumPost[]> {
     const postsRef = collection(this.firestore, 'forumPosts');
@@ -129,4 +134,18 @@ export class ContentService {
       comments: increment(1)
     });
   }
+  async checkIfAdmin(uid: string): Promise<boolean> {
+  // --- TAMBAHKAN LOG #1: UID APA YANG DICEK? ---
+  console.log('Mengecek status admin untuk UID:', uid);
+  // ---------------------------------------------
+
+  const adminRef = doc(this.firestore, `admins/${uid}`);
+  const adminSnap = await getDoc(adminRef);
+
+  // --- TAMBAHKAN LOG #2: APA HASILNYA? ---
+  console.log('Apakah dokumen admin ditemukan?', adminSnap.exists());
+  // ------------------------------------------
+
+  return adminSnap.exists();
+}
 }

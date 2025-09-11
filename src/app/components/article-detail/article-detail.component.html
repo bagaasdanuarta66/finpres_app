@@ -1,0 +1,35 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <!-- Menampilkan judul artikel di header -->
+    <ion-title>{{ article?.title }}</ion-title>
+    <ion-buttons slot="end">
+      <!-- Tombol untuk menutup pop-up -->
+      <ion-button (click)="dismissModal()">Tutup</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Pastikan 'article' sudah ada sebelum mencoba menampilkan isinya -->
+  <div *ngIf="article">
+    <!-- Header di dalam konten (Ikon & Badge) -->
+    <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; color: white; font-size: 60px; position: relative; border-radius: 12px; margin-bottom: 24px;">
+      {{ article.icon }}
+      <div style="position: absolute; top: 12px; left: 12px; background: #fdcb6e; color: white; padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 700;">{{ article.badge }}</div>
+    </div>
+
+    <!-- Judul & Penulis -->
+    <h1 style="font-size: 22px; font-weight: 700; color: #2C3E50; line-height: 1.3;">{{ article.title }}</h1>
+    <p style="font-size: 13px; color: #5A6C7D; margin-top: 8px; margin-bottom: 24px;">
+      Oleh {{ article.authorName }} • {{ article.createdAt.toDate() | date:'fullDate' }}
+    </p>
+
+    <!-- Garis Pemisah -->
+    <ion-item-divider style="margin-bottom: 24px;"></ion-item-divider>
+
+    <!-- Isi Lengkap Artikel -->
+    <div style="font-size: 16px; color: #34495E; line-height: 1.7; white-space: pre-wrap;">
+      {{ article.content }}
+    </div>
+  </div>
+</ion-content>

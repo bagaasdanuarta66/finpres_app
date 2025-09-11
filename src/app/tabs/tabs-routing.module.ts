@@ -24,7 +24,7 @@ const routes: Routes = [
           },
           {
             path: 'berita', // Ini untuk /tabs/tab1/berita
-            loadChildren: () => import('../berita/berita.module').then(m => m.BeritaPageModule)
+            loadChildren: () => import('../berita/berita.page.module').then(m => m.BeritaPageModule)
           }
         ]
       },

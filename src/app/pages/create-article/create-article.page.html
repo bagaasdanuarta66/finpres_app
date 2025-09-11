@@ -1,0 +1,74 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/tabs/tab1/berita"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Buat Berita Baru</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="submitArticle()" [disabled]="!articleForm.valid">
+        Publikasi
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <form [formGroup]="articleForm">
+    <ion-list>
+      <ion-item>
+        <ion-input
+          label="Judul Berita"
+          labelPlacement="floating"
+          placeholder="Tulis judul yang jelas dan menarik"
+          formControlName="title"
+          required
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-textarea
+          label="Kutipan (Excerpt)"
+          labelPlacement="floating"
+          placeholder="Ringkasan singkat berita (maks. 150 karakter)"
+          formControlName="excerpt"
+          required
+          maxlength="150"
+          [autoGrow]="true"
+        ></ion-textarea>
+      </ion-item>
+
+      <ion-item>
+        <ion-select label="Kategori (Badge)" labelPlacement="floating" formControlName="badge" required>
+          <ion-select-option value="PRESTASI">Prestasi</ion-select-option>
+          <ion-select-option value="SAINS">Sains</ion-select-option>
+          <ion-select-option value="SENI">Seni</ion-select-option>
+          <ion-select-option value="PENGUMUMAN">Pengumuman</ion-select-option>
+          <ion-select-option value="TEKNOLOGI">Teknologi</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+       <ion-item>
+        <ion-input
+          label="Ikon Emoji"
+          labelPlacement="floating"
+          placeholder="Contoh: 🏆, 🔬, 🎨, 📢"
+          formControlName="icon"
+          required
+        ></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-textarea
+          label="Isi Berita Lengkap"
+          labelPlacement="floating"
+          placeholder="Tuliskan seluruh isi berita di sini..."
+          formControlName="content"
+          required
+          [autoGrow]="true"
+          rows="10"
+        ></ion-textarea>
+      </ion-item>
+
+    </ion-list>
+  </form>
+</ion-content>

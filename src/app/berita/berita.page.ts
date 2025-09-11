@@ -1,9 +1,10 @@
 import { Component, OnInit } from '@angular/core';
-import { AlertController } from '@ionic/angular';
+import { AlertController, ModalController } from '@ionic/angular';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
-import { ContentService, NewsArticle, ForumPost  } from '../services/content.service';
-import { Auth, User } from '@angular/fire/auth'; 
+import { ContentService, NewsArticle, ForumPost } from '../services/content.service';
+import { Auth, User } from '@angular/fire/auth';
+import { ArticleDetailComponent } from '../components/article-detail/article-detail.component';
 
 
 @Component({
@@ -21,24 +22,29 @@ export class BeritaPage implements OnInit {
   // Menyiapkan wadah dinamis untuk Forum
   forumPosts$!: Observable<ForumPost[]>;
   currentUser: User | null = null;
-
+isCurrentUserAdmin = false; // Awalnya kita anggap bukan admin
 
   constructor(
-    private alertController: AlertController,
-    private router: Router,
-    private contentService: ContentService,
-    private auth: Auth
-  ) {
-    // Kode untuk mendapatkan info user diletakkan DI DALAM constructor
-    this.auth.onAuthStateChanged(user => {
-      if (user) {
-        this.currentUser = user;
-      } else {
-        this.currentUser = null;
-      }
-    });
-  }
-
+  private alertController: AlertController,
+  private router: Router,
+  private contentService: ContentService,
+  private auth: Auth,
+   private modalCtrl: ModalController
+) {
+  this.auth.onAuthStateChanged(async (user) => { // Tambahkan 'async' di sini
+    this.currentUser = user;
+    if (user) {
+      // Setelah mendapatkan user, langsung cek status adminnya
+      this.isCurrentUserAdmin = await this.contentService.checkIfAdmin(user.uid);
+        // --- TAMBAHKAN BARIS INI UNTUK MENGINTIP ---
+      console.log('STATUS ADMIN:', this.isCurrentUserAdmin);
+      // -
+    } else {
+      // Jika tidak ada user, status admin pasti false
+      this.isCurrentUserAdmin = false;
+    }
+  });
+}
   // Hanya ada SATU ngOnInit, ini adalah tempat yang benar
   ngOnInit() {
     // Memanggil service untuk mengambil data Berita dan Forum
@@ -68,18 +74,25 @@ export class BeritaPage implements OnInit {
     this.activeTab = tabName;
   }
   
-  async createContent() {
-    this.showAlert('✍️', 'Fitur "Buat Konten" akan segera tersedia!');
-  }
-
+ createContent() {
+  this.router.navigate(['/create-article']);
+}
   createPost() {
   // Menggunakan router untuk berpindah ke halaman formulir
   this.router.navigate(['/create-post']);
 }
   
-  async viewArticle(article: NewsArticle) {
-    this.showAlert('📖', `Membaca artikel: ${article.title}`);
-  }
+async viewArticle(article: NewsArticle) {
+  // Membuat modal/pop-up
+  const modal = await this.modalCtrl.create({
+    component: ArticleDetailComponent, // Komponen yang akan ditampilkan
+    componentProps: {
+      'article': article // Mengirim data artikel ke dalam modal
+    }
+  });
+  // Menampilkan modal
+  return await modal.present();
+}
 
   viewPost(post: ForumPost) {
   // Menggunakan router untuk navigasi ke halaman detail

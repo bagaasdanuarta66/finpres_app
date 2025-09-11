@@ -19,8 +19,7 @@
         <div
           style="font-size: 28px; font-weight: 700; background: linear-gradient(135deg, #EF4444, #10B981); -webkit-background-clip: text; -webkit-text-fill-color: transparent; letter-spacing: -0.5px;">
           📰 News & Forum</div>
-        <button (click)="createContent()"
-          style="background: linear-gradient(135deg, #4A90E2, #6BB6FF); color: white; border: none; padding: 12px 20px; border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 16px rgba(74,144,226,0.15);">+
+       <button *ngIf="isCurrentUserAdmin" (click)="createContent()" style="background: linear-gradient(135deg, #4A90E2, #6BB6FF); color: white; border: none; padding: 12px 20px; border-radius: 25px; font-size: 14px; font-weight: 600; cursor: pointer; box-shadow: 0 4px 16px rgba(74,144,226,0.15);">+
           Buat Konten</button>
       </div>
 
