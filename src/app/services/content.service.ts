@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, doc, docData, orderBy, query, addDoc, serverTimestamp, getDoc, deleteDoc, runTransaction, arrayUnion, arrayRemove, increment, updateDoc } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, docData, orderBy, query, addDoc, serverTimestamp, getDoc, deleteDoc, runTransaction, arrayUnion, arrayRemove, increment, updateDoc, where } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 // Ini adalah "cetak biru" atau blueprint untuk data berita kita
@@ -36,6 +36,18 @@ export interface Comment {
   authorName: string;
   createdAt: any;
 }
+export interface Program {
+  id: string;
+  icon: string;
+  title: string;
+  organizer: string;
+  desc: string;
+  points: number;
+  deadline: string;
+  participants: number;
+  badge?: string;
+}
+
 
 // ---------------------
 
@@ -46,7 +58,38 @@ export class ContentService {
 
   // CONSTRUCTOR SEHARUSNYA DI ATAS SEBELUM FUNGSI-FUNGSI LAIN
   constructor(private firestore: Firestore) { }
+   getPrograms(): Observable<Program[]> {
+    const programsRef = collection(this.firestore, 'programs');
+    const q = query(programsRef, orderBy('createdAt', 'desc'));
+    return collectionData(q, { idField: 'id' }) as Observable<Program[]>;
+  }
 
+  getProgramById(programId: string): Observable<Program> {
+    const programRef = doc(this.firestore, `programs/${programId}`);
+    return docData(programRef, { idField: 'id' }) as Observable<Program>;
+  }
+  
+  async registerForProgram(programId: string, userId: string): Promise<void> {
+    const programRef = doc(this.firestore, `programs/${programId}`);
+    const userProgramRef = doc(this.firestore, `userPrograms/${userId}_${programId}`);
+
+    return runTransaction(this.firestore, async (transaction) => {
+      const userProgramDoc = await transaction.get(userProgramRef);
+      if (userProgramDoc.exists()) {
+        throw new Error("Anda sudah terdaftar di program ini.");
+      }
+      transaction.set(userProgramRef, {
+        userId: userId,
+        programId: programId,
+        status: 'berjalan',
+        kemajuan: 0,
+        registeredAt: serverTimestamp()
+      });
+      transaction.update(programRef, {
+        participants: increment(1)
+      });
+    });
+  }
   // --- SEMUA FUNGSI LAIN ADA DI BAWAH CONSTRUCTOR ---
 
   getNewsArticles(): Observable<NewsArticle[]> {

@@ -72,11 +72,19 @@ const routes: Routes = [
   {
     path: 'create-post',
     loadChildren: () => import('./pages/create-post/create-post.module').then( m => m.CreatePostPageModule)
-  },  {
+  },
+  {
     path: 'create-article',
     loadChildren: () => import('./pages/create-article/create-article.module').then( m => m.CreateArticlePageModule)
-  }
-
+  },
+  {
+    path: 'program-detail',
+    loadChildren: () => import('./program-detail/program-detail.module').then( m => m.ProgramDetailPageModule)
+  },
+{
+  path: 'program-detail/:id',
+  loadChildren: () => import('./program-detail/program-detail.module').then( m => m.ProgramDetailPageModule)
+},
 
 
 
