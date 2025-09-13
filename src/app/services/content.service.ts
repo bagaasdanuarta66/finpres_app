@@ -68,6 +68,16 @@ export class ContentService {
     const programRef = doc(this.firestore, `programs/${programId}`);
     return docData(programRef, { idField: 'id' }) as Observable<Program>;
   }
+   getRegisteredProgramsForUser(uid: string): Observable<any[]> {
+    const userProgramsRef = collection(this.firestore, 'userPrograms');
+    const q = query(userProgramsRef, where('userId', '==', uid));
+    return collectionData(q, { idField: 'id' });
+  }
+getCampaignsForUser(uid: string): Observable<any[]> {
+    const campaignsRef = collection(this.firestore, 'campaigns');
+    const q = query(campaignsRef, where('userId', '==', uid));
+    return collectionData(q, { idField: 'id' });
+  }
   
   async registerForProgram(programId: string, userId: string): Promise<void> {
     const programRef = doc(this.firestore, `programs/${programId}`);

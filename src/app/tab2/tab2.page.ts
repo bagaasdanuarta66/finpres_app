@@ -3,7 +3,8 @@ import { AlertController, ToastController } from '@ionic/angular';
 import { Router } from '@angular/router';
 // Di bagian atas, bersama import lainnya
 import { AuthService } from '../services/auth.service';
-import { Observable } from 'rxjs'; // <-- Import Observable
+import { ContentService } from '../services/content.service';
+import { Observable, of } from 'rxjs';
 import { switchMap } from 'rxjs/operators'; // <-
 import { firstValueFrom } from 'rxjs';
 import { NotificationService } from '../services/notification.service';
@@ -20,9 +21,12 @@ export class Tab2Page implements OnInit {
   
   // Variabel baru untuk menampung data profil
   userProfile$: Observable<any | null>;
+   myPrograms$: Observable<any[]>;
+     myCampaigns$!: Observable<any[]>;
 
   constructor(
     public authService: AuthService,
+     private contentService: ContentService,
     private router: Router,
     private alertController: AlertController,
     public notificationService: NotificationService,
@@ -41,7 +45,30 @@ export class Tab2Page implements OnInit {
         }
       })
     );
+     this.myPrograms$ = this.authService.currentUser$.pipe(
+      switchMap(user => {
+        if (user) {
+          // Jika ada pengguna login, panggil fungsi baru dari contentService
+          return this.contentService.getRegisteredProgramsForUser(user.uid);
+        } else {
+          // Jika tidak ada pengguna, kembalikan array kosong
+          return of([]);
+        }
+      })
+    );
+    this.myCampaigns$ = this.authService.currentUser$.pipe(
+    switchMap(user => {
+      if (user) {
+        // Jika ada pengguna login, panggil fungsi dari contentService
+        return this.contentService.getCampaignsForUser(user.uid);
+      } else {
+        // Jika tidak ada pengguna, kembalikan array kosong
+        return of([]);
+      }
+    })
+  );
   }
+  
   
   ngOnInit() {}
    // --- TAMBAHKAN FUNGSI INI ---
@@ -260,12 +287,12 @@ export class Tab2Page implements OnInit {
 
   async myPrograms() {
     // Navigasi ke Tab 3
-    this.router.navigateByUrl('/tabs/tab3');
+    this.router.navigateByUrl('/tabs/tab4');
   }
 
   async myCampaigns() {
     // Navigasi ke Tab 4
-    this.router.navigateByUrl('/tabs/tab4');
+    this.router.navigateByUrl('/tabs/tab3');
   }
 
   async savedItems() {
