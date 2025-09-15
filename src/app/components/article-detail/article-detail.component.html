@@ -1,35 +1,33 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar>
-    <!-- Menampilkan judul artikel di header -->
-    <ion-title>{{ article?.title }}</ion-title>
+<ion-header style="box-shadow: none;">
+  <ion-toolbar style="--background: linear-gradient(135deg, #ffffff 0%, #FAFBFC 100%); --border-width: 0; border-bottom: 1px solid rgba(74, 144, 226, 0.1);">
+    <ion-title style="font-weight: 700; color: #2C3E50; font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ article?.title }}</ion-title>
     <ion-buttons slot="end">
-      <!-- Tombol untuk menutup pop-up -->
-      <ion-button (click)="dismissModal()">Tutup</ion-button>
+      <ion-button (click)="dismissModal()" style="--color: #4A90E2; --padding-end: 10px; text-transform: none; font-weight: 600;">Tutup</ion-button>
     </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <!-- Pastikan 'article' sudah ada sebelum mencoba menampilkan isinya -->
-  <div *ngIf="article">
-    <!-- Header di dalam konten (Ikon & Badge) -->
-    <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; color: white; font-size: 60px; position: relative; border-radius: 12px; margin-bottom: 24px;">
-      {{ article.icon }}
-      <div style="position: absolute; top: 12px; left: 12px; background: #fdcb6e; color: white; padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 700;">{{ article.badge }}</div>
-    </div>
+<ion-content [fullscreen]="true" style="--background: linear-gradient(135deg, #f8fbff 0%, #e8f4fd 100%); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <div style="padding: 20px;">
+    <div *ngIf="article">
+      
+      <div style="width: 100%; height: 160px; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; color: white; font-size: 60px; position: relative; border-radius: 20px; margin-bottom: 24px; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.2);">
+        {{ article.icon }}
+        <div style="position: absolute; top: 15px; left: 15px; background: rgba(255, 255, 255, 0.2); backdrop-filter: blur(10px); color: white; padding: 6px 12px; border-radius: 15px; font-size: 11px; font-weight: 600;">{{ article.badge }}</div>
+      </div>
 
-    <!-- Judul & Penulis -->
-    <h1 style="font-size: 22px; font-weight: 700; color: #2C3E50; line-height: 1.3;">{{ article.title }}</h1>
-    <p style="font-size: 13px; color: #5A6C7D; margin-top: 8px; margin-bottom: 24px;">
-      Oleh {{ article.authorName }} • {{ article.createdAt.toDate() | date:'fullDate' }}
-    </p>
+      <h1 style="font-size: 24px; font-weight: 700; color: #2C3E50; line-height: 1.3; margin-bottom: 8px;">{{ article.title }}</h1>
+      <p style="font-size: 14px; color: #5A6C7D; margin-top: 0; margin-bottom: 24px; display: flex; align-items: center; gap: 8px;">
+        <span style="font-weight: 500;">Oleh {{ article.authorName }}</span>
+        <span>•</span>
+        <span>{{ article.createdAt.toDate() | date:'fullDate' }}</span>
+      </p>
 
-    <!-- Garis Pemisah -->
-    <ion-item-divider style="margin-bottom: 24px;"></ion-item-divider>
+      <div style="width: 100%; height: 1px; background: #e8f4fd; margin-bottom: 24px;"></div>
 
-    <!-- Isi Lengkap Artikel -->
-    <div style="font-size: 16px; color: #34495E; line-height: 1.7; white-space: pre-wrap;">
-      {{ article.content }}
+      <div style="font-size: 16px; color: #34495E; line-height: 1.7; white-space: pre-wrap;">
+        {{ article.content }}
+      </div>
     </div>
   </div>
 </ion-content>

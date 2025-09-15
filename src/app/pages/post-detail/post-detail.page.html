@@ -1,74 +1,80 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar>
+<ion-header style="box-shadow: none;">
+  <ion-toolbar style="--background: linear-gradient(135deg, #ffffff 0%, #FAFBFC 100%); --border-width: 0; border-bottom: 1px solid rgba(74, 144, 226, 0.1);">
     <ion-buttons slot="start">
-      <!-- Perubahan kecil: defaultHref lebih baik ke halaman berita/forum -->
-      <ion-back-button defaultHref="/tabs/tab1/berita"></ion-back-button>
+      <ion-back-button defaultHref="/tabs/tab1/berita" style="--color: #4A90E2;"></ion-back-button>
     </ion-buttons>
-    <ion-title *ngIf="post$ | async as post">{{ post.title }}</ion-title>
+    <ion-title *ngIf="post$ | async as post" style="font-weight: 700; color: #2C3E50; font-size: 18px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis;">{{ post.title }}</ion-title>
   </ion-toolbar>
 </ion-header>
 
-<ion-content [fullscreen]="true">
-  <!-- BAGIAN INI TETAP SAMA SEPERTI KODE ANDA -->
-  <div *ngIf="post$ | async as post" class="ion-padding">
+<ion-content [fullscreen]="true" style="--background: linear-gradient(135deg, #f8fbff 0%, #e8f4fd 100%); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  
+  <div *ngIf="post$ | async as post" style="padding: 20px;">
     
-    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;"><div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #10B981, #34D399); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: 700; flex-shrink: 0;">{{ post.authorName.charAt(0).toUpperCase() }}</div><div><h3 style="font-size: 16px; font-weight: 600; color: #2C3E50; margin: 0 0 4px 0;">{{ post.authorName }}</h3><p style="font-size: 13px; color: #5A6C7D; margin: 0;">{{ post.authorSchool }}</p></div></div>
+    <div style="display: flex; align-items: center; gap: 12px; margin-bottom: 20px;">
+      <div style="width: 48px; height: 48px; border-radius: 50%; background: linear-gradient(135deg, #4A90E2, #6BB6FF); display: flex; align-items: center; justify-content: center; color: white; font-size: 20px; font-weight: 700; flex-shrink: 0; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.2);">
+        {{ post.authorName.charAt(0).toUpperCase() }}
+      </div>
+      <div>
+        <h3 style="font-size: 16px; font-weight: 600; color: #2C3E50; margin: 0 0 4px 0;">{{ post.authorName }}</h3>
+        <p style="font-size: 13px; color: #5A6C7D; margin: 0;">{{ post.authorSchool }}</p>
+      </div>
+    </div>
+    
     <h1 style="font-size: 24px; font-weight: 700; color: #2C3E50; line-height: 1.3; margin-bottom: 8px;">{{ post.title }}</h1>
     <p style="font-size: 12px; color: #5A6C7D; margin-bottom: 24px;">Diposting pada {{ post.createdAt.toDate() | date:'fullDate' }}</p>
-    <ion-item-divider style="margin-bottom: 24px;"></ion-item-divider>
+    
+    <div style="width: 100%; height: 1px; background: #e8f4fd; margin-bottom: 24px;"></div>
+    
     <div style="font-size: 16px; color: #34495E; line-height: 1.7; white-space: pre-wrap;">{{ post.content }}</div>
-    <ion-item-divider style="margin-top: 30px; margin-bottom: 15px;"></ion-item-divider>
-    <div style="display: flex; gap: 20px; font-size: 14px; color: #5A6C7D;"><div style="display: flex; align-items: center; gap: 6px;"><span>👍</span><span>{{ post.likes }} Suka</span></div><div style="display: flex; align-items: center; gap: 6px;"><span>💬</span><span>{{ post.comments }} Komentar</span></div></div>
-
+    
+    <div style="width: 100%; height: 1px; background: #e8f4fd; margin-top: 30px; margin-bottom: 15px;"></div>
+    
+    <div style="display: flex; gap: 20px; font-size: 14px; color: #5A6C7D;">
+      <div style="display: flex; align-items: center; gap: 6px;"><span style="font-size: 18px;">👍</span><span>{{ post.likes }} Suka</span></div>
+      <div style="display: flex; align-items: center; gap: 6px;"><span style="font-size: 18px;">💬</span><span>{{ post.comments }} Komentar</span></div>
+    </div>
   </div>
 
-  <!-- BAGIAN SKELETON JUGA TETAP SAMA -->
-  <div *ngIf="!(post$ | async)" class="ion-padding">
-    <ion-skeleton-text [animated]="true" style="width: 60%; height: 24px; margin-bottom: 15px;"></ion-skeleton-text>
-    <ion-skeleton-text [animated]="true" style="width: 100%; height: 16px;"></ion-skeleton-text>
-    <ion-skeleton-text [animated]="true" style="width: 80%; height: 16px;"></ion-skeleton-text>
-    <ion-skeleton-text [animated]="true" style="width: 90%; height: 16px; margin-top: 20px;"></ion-skeleton-text>
-  </div>
+  <div *ngIf="!(post$ | async)" style="padding: 20px;">
+      </div>
   
-   <ion-list *ngIf="comments$ | async as comments" class="ion-padding-top" style="background: transparent;">
-    <ion-list-header>
+  <ion-list *ngIf="comments$ | async as comments" style="background: transparent; padding: 0 20px 20px 20px;">
+    
+    <ion-list-header style="--color: #2C3E50; font-weight: 700; font-size: 20px; padding-left: 0; margin-bottom: 10px;">
       Komentar
     </ion-list-header>
     
-    <ion-item *ngIf="comments.length === 0" lines="none" style="--background: transparent;">
-      <ion-label class="ion-text-center" color="medium">
-        <p>Jadilah yang pertama berkomentar!</p>
-      </ion-label>
-    </ion-item>
+    <div *ngIf="comments.length === 0" style="text-align: center; color: #5A6C7D; padding: 30px 0;">
+      <ion-icon name="chatbubbles-outline" style="font-size: 48px; color: #a3b1c6; margin-bottom: 15px;"></ion-icon>
+      <p>Jadilah yang pertama berkomentar!</p>
+    </div>
 
-    <ion-item *ngFor="let comment of comments" lines="full" style="--background: transparent;">
-      <ion-label class="ion-text-wrap">
-        <h3 style="font-weight: 600; font-size: 14px;">{{ comment.authorName }}</h3>
-        <p style="font-size: 15px; margin-top: 4px; margin-bottom: 8px;">{{ comment.content }}</p>
-        <!-- PERBAIKAN: Tambahkan *ngIf untuk mencegah error -->
-        <p *ngIf="comment.createdAt" class="ion-text-end" color="medium" style="font-size: 11px;">
+    <ion-item *ngFor="let comment of comments" lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 15px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px; --padding-end: 15px; --padding-top: 15px; --padding-bottom: 10px; align-items: flex-start;">
+      <ion-label style="white-space: normal;">
+        <h3 style="font-weight: 600; font-size: 14px; color: #2C3E50;">{{ comment.authorName }}</h3>
+        <p style="font-size: 15px; margin-top: 4px; margin-bottom: 8px; color: #34495E; line-height: 1.5;">{{ comment.content }}</p>
+        <p *ngIf="comment.createdAt" style="text-align: right; color: #a3b1c6; font-size: 11px; margin: 0;">
           {{ comment.createdAt.toDate() | date:'short' }}
         </p>
       </ion-label>
     </ion-item>
   </ion-list>
-  
 </ion-content>
 
-<!-- ==== BAGIAN FORM KIRIM KOMENTAR ==== -->
-<ion-footer class="ion-no-border">
-  <ion-toolbar>
-    <ion-item lines="none" style="--background: #f0f4f8; border-radius: 25px; margin: 0 8px 8px 8px; --padding-start: 8px;">
+<ion-footer class="ion-no-border" style="background: transparent;">
+  <ion-toolbar style="--background: transparent; --padding-start: 10px; --padding-end: 10px; --padding-bottom: 10px;">
+    <div style="background: rgba(255, 255, 255, 0.95); backdrop-filter: blur(20px); border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 25px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.1); display: flex; align-items: center; padding-left: 8px;">
       <ion-textarea
         [(ngModel)]="newComment"
         placeholder="Tulis komentar..."
         [autoGrow]="true"
         rows="1"
+        style="--padding-start: 10px; --padding-end: 10px; --color: #2C3E50;"
       ></ion-textarea>
-      <ion-button (click)="addComment()" slot="end" fill="clear" [disabled]="!newComment.trim()">
+      <ion-button (click)="addComment()" fill="clear" [disabled]="!newComment.trim()" style="--color: #4A90E2; --ripple-color: #4A90E2;">
         <ion-icon name="send" slot="icon-only"></ion-icon>
       </ion-button>
-    </ion-item>
+    </div>
   </ion-toolbar>
 </ion-footer>
-

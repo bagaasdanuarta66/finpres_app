@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, doc, docData, orderBy, query, addDoc, serverTimestamp, getDoc, deleteDoc, runTransaction, arrayUnion, arrayRemove, increment, updateDoc, where } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, docData, orderBy, query, addDoc, serverTimestamp, getDoc, deleteDoc, runTransaction, arrayUnion, arrayRemove, increment, updateDoc, where, limit } from '@angular/fire/firestore';
 import { Observable } from 'rxjs';
 
 // Ini adalah "cetak biru" atau blueprint untuk data berita kita
@@ -89,6 +89,17 @@ getCampaignsForUser(uid: string): Observable<any[]> {
     const campaignsRef = collection(this.firestore, 'campaigns');
     const q = query(campaignsRef, where('userId', '==', uid));
     return collectionData(q, { idField: 'id' });
+  }
+  getPopularPrograms(count: number): Observable<Program[]> {
+    const programsRef = collection(this.firestore, 'programs');
+    // Query untuk mengurutkan berdasarkan 'participants' (terbanyak ke sedikit)
+    // dan mengambil hanya sejumlah 'count' (misalnya, 3 program teratas)
+    const q = query(
+      programsRef, 
+      orderBy('participants', 'desc'), 
+      limit(count)
+    );
+    return collectionData(q, { idField: 'id' }) as Observable<Program[]>;
   }
   
   async registerForProgram(programId: string, userId: string): Promise<void> {
