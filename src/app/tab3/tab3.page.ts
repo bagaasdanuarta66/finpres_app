@@ -7,6 +7,8 @@ import { switchMap } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { Firestore, collection, query, orderBy, collectionData } from '@angular/fire/firestore';
 import { AlertController,ToastController } from '@ionic/angular';
+import { ContentService, Campaign } from '../services/content.service';
+
 
 @Component({
   selector: 'app-tab3',
@@ -24,7 +26,9 @@ export class Tab3Page {
 
   constructor(
     private router: Router,
-   public authService: AuthService, // <-- Dibuat 'public' agar bisa diakses dari HTML
+   public authService: AuthService,
+       private contentService: ContentService, // <-- 3. Suntikkan ContentService
+ // <-- Dibuat 'public' agar bisa diakses dari HTML
     private firestore: Firestore,
     private alertController: AlertController,
     private toastController: ToastController // Untuk fungsi placeholder
@@ -45,6 +49,21 @@ export class Tab3Page {
   async createCampaign() {
     this.router.navigate(['/pages/add-campaign']); // Kita akan buat halaman ini
   }
+   // --- FUNGSI BARU UNTUK SIMULASI DONASI ---
+  async donate(campaign: Campaign, event: Event) {
+    // Mencegah klik tembus ke kartu di belakangnya
+    event.stopPropagation(); 
+
+    try {
+      // Panggil service untuk menjalankan simulasi
+      await this.contentService.simulateDonation(campaign);
+      this.presentToast('Terima kasih! Donasi Anda telah dicatat.');
+    } catch (error) {
+      console.error('Gagal melakukan donasi simulasi', error);
+      this.presentToast('Gagal mencatat donasi. Coba lagi.');
+    }
+  }
+  // --
 
    // --- TAMBAHKAN FUNGSI BARU INI UNTUK KONFIRMASI HAPUS ---
   async confirmDeleteCampaign(campaign: any) {

@@ -47,6 +47,18 @@ export interface Program {
   participants: number;
   badge?: string;
 }
+export interface Campaign {
+  id: string; 
+  userId: string;
+   creatorName: string; 
+   title: string;
+    description: string;
+     targetDana: number;
+      danaTerkumpul: number; 
+      imageUrl: string; 
+      createdAt: any;
+       trending?: boolean;
+}
 
 
 // ---------------------
@@ -201,4 +213,14 @@ getCampaignsForUser(uid: string): Observable<any[]> {
 
   return adminSnap.exists();
 }
+ simulateDonation(campaign: Campaign) {
+    const campaignRef = doc(this.firestore, `campaigns/${campaign.id}`);
+    const donationAmount = campaign.targetDana * 0.05; // Simulasi donasi 5%
+    if (campaign.danaTerkumpul + donationAmount >= campaign.targetDana) {
+      return updateDoc(campaignRef, { danaTerkumpul: campaign.targetDana });
+    } else {
+      return updateDoc(campaignRef, { danaTerkumpul: increment(donationAmount) });
+    }
+  }
+
 }
