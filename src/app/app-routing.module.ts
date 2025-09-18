@@ -23,14 +23,7 @@ const routes: Routes = [
     path: 'register',
     loadChildren: () => import('./register/register.module').then( m => m.RegisterPageModule)
   },
-  {
-    path: 'pages/add-transaction',
-    loadChildren: () => import('./pages/add-transaction/add-transaction.module').then( m => m.AddTransactionPageModule)
-  },
-   {
-    path: 'pages/add-program',
-    loadChildren: () => import('./pages/add-program/add-program.module').then( m => m.AddProgramPageModule)
-  },
+ 
   {
     path: 'pages/add-campaign',
     loadChildren: () => import('./pages/add-campaign/add-campaign.module').then( m => m.AddCampaignPageModule)
@@ -53,14 +46,7 @@ const routes: Routes = [
     path: 'edit-profile',
     loadChildren: () => import('./edit-profile/edit-profile.module').then( m => m.EditProfilePageModule)
   },
-  {
-    path: 'add-transaction',
-    loadChildren: () => import('./pages/add-transaction/add-transaction.module').then( m => m.AddTransactionPageModule)
-  },
-  {
-    path: 'add-program',
-    loadChildren: () => import('./pages/add-program/add-program.module').then( m => m.AddProgramPageModule)
-  },
+  
   {
     path: 'add-campaign',
     loadChildren: () => import('./pages/add-campaign/add-campaign.module').then( m => m.AddCampaignPageModule)
@@ -84,7 +70,11 @@ const routes: Routes = [
 {
   path: 'program-detail/:id',
   loadChildren: () => import('./program-detail/program-detail.module').then( m => m.ProgramDetailPageModule)
-},
+},  {
+    path: 'help-center',
+    loadChildren: () => import('./help-center/help-center.module').then( m => m.HelpCenterPageModule)
+  },
+
   
 
 

@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, doc, docData, orderBy, query, addDoc, serverTimestamp, getDoc, deleteDoc, runTransaction, arrayUnion, arrayRemove, increment, updateDoc, where, limit } from '@angular/fire/firestore';
-import { Observable } from 'rxjs';
+import { Firestore, collection, collectionData, doc, docData, orderBy, query, addDoc, serverTimestamp, getDoc, deleteDoc, runTransaction, arrayUnion, arrayRemove, increment, updateDoc, where, limit,  getCountFromServer } from '@angular/fire/firestore';
+import { Observable, from, of } from 'rxjs';
 
 // Ini adalah "cetak biru" atau blueprint untuk data berita kita
 // Memastikan kode kita tahu persis struktur data yang akan diterima
@@ -58,6 +58,7 @@ export interface Campaign {
       imageUrl: string; 
       createdAt: any;
        trending?: boolean;
+        status?: string; // <-- TAMBAHKAN INI
 }
 
 
@@ -101,6 +102,24 @@ getCampaignsForUser(uid: string): Observable<any[]> {
     );
     return collectionData(q, { idField: 'id' }) as Observable<Program[]>;
   }
+  // Salin dan tempel SELURUH fungsi ini
+getCompletedProgramsCount(uid: string): Observable<number> {
+  // Menentukan koleksi mana yang mau dihitung
+  const userProgramsRef = collection(this.firestore, 'userPrograms');
+  
+  // Membuat query untuk mencari dokumen dengan 2 syarat:
+  // 1. userId harus cocok dengan pengguna yang login
+  // 2. status harus 'selesai'
+  const q = query(
+    userProgramsRef,
+    where('userId', '==', uid),
+    where('status', '==', 'selesai')
+  );
+
+  // Menjalankan query hitung ke server dan mengubah hasilnya (Promise) menjadi Observable
+  const countPromise = getCountFromServer(q).then(snapshot => snapshot.data().count);
+  return from(countPromise);
+}
   
   async registerForProgram(programId: string, userId: string): Promise<void> {
     const programRef = doc(this.firestore, `programs/${programId}`);
@@ -200,6 +219,13 @@ getCampaignsForUser(uid: string): Observable<any[]> {
     const q = query(commentsRef, orderBy('createdAt', 'asc'));
     return collectionData(q, { idField: 'id' }) as Observable<Comment[]>;
   }
+  // Di dalam class ContentService
+
+getCampaigns(): Observable<any[]> {
+  const campaignsRef = collection(this.firestore, 'campaigns');
+  const q = query(campaignsRef, orderBy('createdAt', 'desc'));
+  return collectionData(q, { idField: 'id' });
+}
 
   async addCommentToPost(postId: string, commentData: any) {
     const commentsRef = collection(this.firestore, `forumPosts/${postId}/comments`);
@@ -224,14 +250,37 @@ getCampaignsForUser(uid: string): Observable<any[]> {
 
   return adminSnap.exists();
 }
- simulateDonation(campaign: Campaign) {
-    const campaignRef = doc(this.firestore, `campaigns/${campaign.id}`);
-    const donationAmount = campaign.targetDana * 0.05; // Simulasi donasi 5%
-    if (campaign.danaTerkumpul + donationAmount >= campaign.targetDana) {
-      return updateDoc(campaignRef, { danaTerkumpul: campaign.targetDana });
-    } else {
-      return updateDoc(campaignRef, { danaTerkumpul: increment(donationAmount) });
-    }
+// Di dalam content.service.ts
+
+// Di dalam file content.service.ts
+
+// Perhatikan perubahan return type di sini menjadi: Promise<boolean>
+async simulateDonation(campaign: Campaign): Promise<boolean> {
+  // Jika campaign sudah selesai, batalkan donasi dan kembalikan 'false'
+  if (campaign.danaTerkumpul >= campaign.targetDana) {
+    console.log('Target sudah tercapai, donasi dibatalkan.');
+    return false; // <-- PENTING: Lapor bahwa donasi tidak terjadi
   }
 
-}
+  const campaignRef = doc(this.firestore, `campaigns/${campaign.id}`);
+  const donationAmount = campaign.targetDana * 0.05;
+  const danaSetelahDonasi = campaign.danaTerkumpul + donationAmount;
+  let finalDana = danaSetelahDonasi >= campaign.targetDana ? campaign.targetDana : danaSetelahDonasi;
+
+  try {
+    if (finalDana >= campaign.targetDana) {
+      // Jika donasi membuat target tercapai
+      await updateDoc(campaignRef, { 
+        danaTerkumpul: finalDana,
+        status: 'selesai'
+      });
+    } else {
+      // Jika donasi berhasil tapi belum mencapai target
+      await updateDoc(campaignRef, { danaTerkumpul: increment(donationAmount) });
+    }
+    return true; // <-- PENTING: Lapor bahwa donasi BERHASIL
+  } catch (error) {
+    console.error("Gagal mengupdate donasi di Firestore:", error);
+    return false; // <-- PENTING: Lapor bahwa donasi GAGAL
+  }
+}}

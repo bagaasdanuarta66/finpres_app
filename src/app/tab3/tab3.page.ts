@@ -50,20 +50,27 @@ export class Tab3Page {
     this.router.navigate(['/pages/add-campaign']); // Kita akan buat halaman ini
   }
    // --- FUNGSI BARU UNTUK SIMULASI DONASI ---
-  async donate(campaign: Campaign, event: Event) {
-    // Mencegah klik tembus ke kartu di belakangnya
-    event.stopPropagation(); 
+  // GANTI SELURUH FUNGSI 'donate' LAMA ANDA DENGAN YANG INI:
 
-    try {
-      // Panggil service untuk menjalankan simulasi
-      await this.contentService.simulateDonation(campaign);
+async donate(campaign: Campaign) { // <-- PERUBAHAN #1: Hanya menerima 1 parameter
+  // event.stopPropagation() sudah kita pindah dan tangani di HTML
+
+  try {
+    // Panggil service dan TANGKAP HASILNYA (true atau false)
+    const isSuccess = await this.contentService.simulateDonation(campaign);
+
+    // PERUBAHAN #2: Hanya tampilkan toast JIKA donasi berhasil (isSuccess bernilai true)
+    if (isSuccess) {
       this.presentToast('Terima kasih! Donasi Anda telah dicatat.');
-    } catch (error) {
-      console.error('Gagal melakukan donasi simulasi', error);
-      this.presentToast('Gagal mencatat donasi. Coba lagi.');
     }
+    // Jika isSuccess bernilai false (karena campaign sudah 100%), 
+    // maka tidak akan terjadi apa-apa, sesuai keinginan kita.
+
+  } catch (error) {
+    console.error('Gagal melakukan donasi simulasi', error);
+    this.presentToast('Gagal mencatat donasi. Coba lagi.');
   }
-  // --
+}
 
    // --- TAMBAHKAN FUNGSI BARU INI UNTUK KONFIRMASI HAPUS ---
   async confirmDeleteCampaign(campaign: any) {

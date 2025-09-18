@@ -9,6 +9,8 @@ import { switchMap } from 'rxjs/operators'; // <-
 import { firstValueFrom } from 'rxjs';
 import { NotificationService } from '../services/notification.service';
 import { Camera, CameraResultType, CameraSource } from '@capacitor/camera';
+import { ThemeService } from '../services/theme.service'; // Sesuaikan path jika perlu
+
 
 @Component({
   selector: 'app-tab2',
@@ -23,8 +25,12 @@ export class Tab2Page implements OnInit {
   userProfile$: Observable<any | null>;
    myPrograms$: Observable<any[]>;
      myCampaigns$!: Observable<any[]>;
+       completedProgramsCount$!: Observable<number>;
+
+     
 
   constructor(
+    public themeService: ThemeService,
     public authService: AuthService,
      private contentService: ContentService,
     private router: Router,
@@ -33,6 +39,7 @@ export class Tab2Page implements OnInit {
   
       private toastController: ToastController 
   ) {
+    
     // Mengambil data profil berdasarkan status login
     this.userProfile$ = this.authService.currentUser$.pipe(
       switchMap(user => {
@@ -67,9 +74,23 @@ export class Tab2Page implements OnInit {
       }
     })
   );
+  this.completedProgramsCount$ = this.authService.currentUser$.pipe(
+    switchMap(user => {
+      if (user) {
+        // Jika user login, panggil fungsi baru dari service
+        return this.contentService.getCompletedProgramsCount(user.uid);
+      } else {
+        // Jika tidak login, kembalikan angka 0
+        return of(0);
+      }
+    })
+  );
+  
   }
   
-  
+  toggleTheme() {
+  this.themeService.toggleTheme();
+}
   ngOnInit() {}
    // --- TAMBAHKAN FUNGSI INI ---
   getInitials(namaLengkap: string | null | undefined): string {
@@ -149,20 +170,24 @@ export class Tab2Page implements OnInit {
     toast.present();
   }
 
-  async openSettings() {
-    const alert = await this.alertController.create({
-      header: '⚙️ Pengaturan Aplikasi',
-      message: '📱 Fitur yang tersedia:<br>• Tema aplikasi<br>• Bahasa<br>• Notifikasi push<br>• Privasi<br>• Tentang aplikasi',
-      buttons: ['Tutup']
-    });
-    await alert.present();
+  
+
+// Di dalam class Tab2Page di file tab2.page.ts
+
+// Tambahkan fungsi baru ini
+scrollToSettings() {
+  // Cari elemen dengan id 'pengaturan'
+  const settingsEl = document.getElementById('pengaturan');
+
+  // Jika elemen ditemukan, scroll ke sana dengan animasi halus
+  if (settingsEl) {
+    settingsEl.scrollIntoView({ behavior: 'smooth' });
   }
-
-
+}
   async topUp() {
     const alert = await this.alertController.create({
       header: '💳 Top Up Saldo',
-      message: 'Metode pembayaran:<br>• Transfer bank<br>• E-wallet (OVO, Dana, GoPay)<br>• Virtual account<br>• Kartu kredit/debit',
+      message: 'Metode pembayaran:Silahkan Hubungi Admin',
       buttons: ['Tutup']
     });
     await alert.present();
@@ -171,7 +196,7 @@ export class Tab2Page implements OnInit {
   async viewHistory() {
     const alert = await this.alertController.create({
       header: '📊 Riwayat Transaksi',
-      message: 'Melihat semua aktivitas:<br>• Transaksi masuk/keluar<br>• Penggunaan poin<br>• Reward yang diterima<br>• Export laporan',
+      message: 'Melihat semua aktivitas',
       buttons: ['Tutup']
     });
     await alert.present();
@@ -180,7 +205,7 @@ export class Tab2Page implements OnInit {
   async convertPoints() {
     const alert = await this.alertController.create({
       header: '🔄 Konversi Poin',
-      message: '💡 Tukarkan poin dengan:<br>• Saldo uang<br>• Voucher belanja<br>• Merchandise Sakuma<br>• Akses program premium',
+      message: '💡 Tukarkan poin dengan saldo uang',
       buttons: ['Tutup']
     });
     await alert.present();
@@ -222,14 +247,7 @@ export class Tab2Page implements OnInit {
     await alert.present();
   }
 
-  async viewAchievement(achievement: string) {
-    const alert = await this.alertController.create({
-      header: '🏅 Achievement',
-      message: `Detail pencapaian: ${achievement}`,
-      buttons: ['Tutup']
-    });
-    await alert.present();
-  }
+ 
 
   async editProfile() {
  this.router.navigate(['/edit-profile']);
@@ -244,13 +262,9 @@ export class Tab2Page implements OnInit {
   }
 
   async help() {
-    const alert = await this.alertController.create({
-      header: '❓ Pusat Bantuan',
-      message: 'Dukungan tersedia:<br>• FAQ lengkap<br>• Live chat support<br>• Video tutorial<br>• Hubungi customer service',
-      buttons: ['Tutup']
-    });
-    await alert.present();
-  }
+  // Mengarahkan pengguna ke halaman help-center
+  this.router.navigate(['/help-center']);
+}
  async logout() {
  const profile = await firstValueFrom(this.userProfile$);
 
@@ -295,14 +309,7 @@ export class Tab2Page implements OnInit {
     this.router.navigateByUrl('/tabs/tab3');
   }
 
-  async savedItems() {
-    const alert = await this.alertController.create({
-      header: '❤️ Item Tersimpan',
-      message: 'Koleksi favorit:<br>• Program yang disimpan<br>• Campaign bookmark<br>• Artikel menarik<br>• Video tutorial',
-      buttons: ['Tutup']
-    });
-    await alert.present();
-  }
+  
   // --- TAMBAHKAN FUNGSI BARU INI ---
   goToAddTransactionPage() {
     this.router.navigate(['/pages/add-transaction']);

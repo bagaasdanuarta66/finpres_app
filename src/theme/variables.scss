@@ -1,2 +1,12 @@
 // For information on how to create your own theme, please see:
 // http://ionicframework.com/docs/theming/
+/*
+ * Dark Colors
+ * -------------------------------------------
+ */
+
+body.dark { // <--- TIDAK ADA '/*' DI SINI
+  --ion-color-primary: #428cff;
+  --ion-color-primary-rgb: 66,140,255;
+  // ... dan seterusnya
+} // <--- TIDAK ADA '*/' DI SINI
