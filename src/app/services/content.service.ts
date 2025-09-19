@@ -46,6 +46,7 @@ export interface Program {
   deadline: string;
   participants: number;
   badge?: string;
+  kategori?: string;
 }
 export interface Campaign {
   id: string; 

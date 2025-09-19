@@ -4,6 +4,7 @@ import { Auth } from '@angular/fire/auth';
 import { onAuthStateChanged } from 'firebase/auth';
 import { take } from 'rxjs/operators';
 import { Observable } from 'rxjs';
+import { ThemeService } from './services/theme.service';
 
 @Component({
   selector: 'app-root',

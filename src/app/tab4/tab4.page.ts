@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
-// 1. Impor service dan interface Program yang standar
+import { Observable, of } from 'rxjs'; // <-- TAMBAHAN: 'of' diimpor
 import { ContentService, Program } from '../services/content.service';
+import { AuthService } from '../services/auth.service'; // <-- TAMBAHAN: Impor AuthService
+import { switchMap } from 'rxjs/operators'; // <-- TAMBAHAN: Impor switchMap
 
+// Interface Category tidak perlu diubah
 interface Category {
   id: string;
   icon: string;
@@ -20,9 +22,13 @@ interface Category {
 })
 export class Tab4Page implements OnInit {
 
-  // 2. Ganti array statis dengan satu Observable
   allPrograms$: Observable<Program[]>;
+  myPrograms$: Observable<any[]>; // <-- TAMBAHAN: Untuk menampung "Program Saya"
   
+  // <-- TAMBAHAN: Variabel untuk mengontrol filter/segmen
+  selectedSegment: string = 'semua'; 
+  activeCategory: string = 'semua';
+
   // Kategori bisa tetap statis untuk saat ini
   categories: Category[] = [
     { id: 'kompetisi', icon: '🏆', title: 'Kompetisi', count: 25, badge: 'POPULER' },
@@ -32,23 +38,38 @@ export class Tab4Page implements OnInit {
   ];
 
   constructor(
-    // 3. Suntikkan ContentService dan Router
     private contentService: ContentService,
+    private authService: AuthService, // <-- TAMBAHAN: Suntikkan AuthService
     private router: Router
   ) {
-    // 4. Ambil data program dari service saat halaman dibuat
+    // Mengambil data SEMUA program
     this.allPrograms$ = this.contentService.getPrograms();
+
+    // <-- TAMBAHAN: Mengambil data "PROGRAM SAYA"
+    this.myPrograms$ = this.authService.currentUser$.pipe(
+      switchMap(user => {
+        if (user) {
+          return this.contentService.getRegisteredProgramsForUser(user.uid);
+        } else {
+          return of([]);
+        }
+      })
+    );
   }
 
   ngOnInit() { }
 
-  // 5. Fungsi ini sekarang akan mengarahkan ke halaman detail
   viewProgram(program: Program) {
     this.router.navigate(['/program-detail', program.id]);
   }
 
-  // CATATAN: Fungsi filterPrograms dan openCategory Anda yang lama
-  // bisa tetap ada di sini, tapi untuk saat ini tidak akan berfungsi
-  // dengan data dinamis sampai kita hubungkan dengan query Firestore.
-}
+  // <-- TAMBAHAN: Fungsi untuk mengubah segmen
+  segmentChanged(event: any) {
+    this.selectedSegment = event.detail.value;
+  }
 
+  // <-- TAMBAHAN: Fungsi untuk mengubah filter kategori
+  filterByCategory(category: string) {
+    this.activeCategory = category;
+  }
+}
