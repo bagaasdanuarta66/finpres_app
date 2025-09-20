@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData, doc, docData, orderBy, query, addDoc, serverTimestamp, getDoc, deleteDoc, runTransaction, arrayUnion, arrayRemove, increment, updateDoc, where, limit,  getCountFromServer } from '@angular/fire/firestore';
 import { Observable, from, of, forkJoin } from 'rxjs';
-import { switchMap, map, tap } from 'rxjs/operators'; // <-- Tambahkan map
+import { switchMap, map, tap, catchError } from 'rxjs/operators'; // <-- Tambahkan map
 
 
 // Ini adalah "cetak biru" atau blueprint untuk data berita kita
@@ -102,18 +102,22 @@ getRegisteredProgramsForUser(uid: string): Observable<any[]> {
   const userProgramsRef = collection(this.firestore, 'userPrograms');
   const q = query(userProgramsRef, where('userId', '==', uid));
   
-  // PERBAIKAN: Tambahkan 'as Observable<UserProgram[]>' di sini
   return (collectionData(q, { idField: 'id' }) as Observable<UserProgram[]>).pipe(
     switchMap(userPrograms => {
       if (userPrograms.length === 0) {
         return of([]);
       }
       
-      // Sekarang 'up' akan otomatis dikenali sebagai UserProgram, error hilang
       const programObservables = userPrograms.map(up => { 
         const progRef = doc(this.firestore, `programs/${up.programId}`);
         return docData(progRef, { idField: 'id' }).pipe(
-          map(programDetails => ({ ...up, programDetails }))
+          map(programDetails => ({ ...up, programDetails })),
+          // JIKA TERJADI ERROR (misal, program tidak ditemukan),
+          // jangan hentikan semuanya, tapi kembalikan data seadanya.
+          catchError(error => {
+            console.warn(`Peringatan: Detail untuk program ID ${up.programId} tidak ditemukan.`, error);
+            return of({ ...up, programDetails: null }); // Kembalikan data pendaftaran tanpa detail
+          })
         );
       });
       
