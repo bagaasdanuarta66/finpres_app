@@ -3,7 +3,9 @@ import { Router } from '@angular/router';
 import { Observable, of } from 'rxjs'; // <-- TAMBAHAN: 'of' diimpor
 import { ContentService, Program } from '../services/content.service';
 import { AuthService } from '../services/auth.service'; // <-- TAMBAHAN: Impor AuthService
-import { switchMap } from 'rxjs/operators'; // <-- TAMBAHAN: Impor switchMap
+import { switchMap, tap } from 'rxjs/operators'; // <-- TAMBAHAN: Impor switchMap
+import { ModalController } from '@ionic/angular';
+import { ProgramProgressModalComponent } from '../components/program-progress-modal/program-progress-modal.component';
 
 // Interface Category tidak perlu diubah
 interface Category {
@@ -40,10 +42,17 @@ export class Tab4Page implements OnInit {
   constructor(
     private contentService: ContentService,
     private authService: AuthService, // <-- TAMBAHAN: Suntikkan AuthService
-    private router: Router
+    private router: Router,
+    private modalCtrl: ModalController 
+
   ) {
-    // Mengambil data SEMUA program
-    this.allPrograms$ = this.contentService.getPrograms();
+    this.allPrograms$ = this.contentService.getPrograms().pipe(
+    tap(programs => {
+      this.categories.forEach(cat => {
+        cat.count = programs.filter(p => p.kategori === cat.id).length;
+      });
+    })
+  );
 
     // <-- TAMBAHAN: Mengambil data "PROGRAM SAYA"
     this.myPrograms$ = this.authService.currentUser$.pipe(
@@ -72,4 +81,28 @@ export class Tab4Page implements OnInit {
   filterByCategory(category: string) {
     this.activeCategory = category;
   }
-}
+  async openProgressModal(program: any) {
+  const modal = await this.modalCtrl.create({
+    component: ProgramProgressModalComponent,
+    componentProps: {
+      programData: program
+    }
+  });
+  
+  await modal.present();
+
+  const { data } = await modal.onWillDismiss();
+
+  // Jika modal ditutup dengan tombol "Simpan" (data tidak null)
+  if (data && data.newProgress) {
+    try {
+      // PANGGIL SERVICE UNTUK MENYIMPAN DATA
+      await this.contentService.addProgramProgress(program.id, data.newProgress);
+      console.log("Progres berhasil disimpan!");
+      // Di sini Anda bisa menambahkan notifikasi sukses (toast) jika mau
+    } catch (error) {
+      console.error("Gagal menyimpan progres:", error);
+      // Di sini Anda bisa menambahkan notifikasi error jika mau
+    }
+  }
+}}

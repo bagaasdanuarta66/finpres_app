@@ -1,5 +1,8 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { AlertController } from '@ionic/angular';
+// 1. Impor ContentService
+import { ContentService } from '../services/content.service';
+import { GeminiService } from '../services/gemini.service'; // Pastikan ini di-import
 
 interface AiFeature {
   id: string;
@@ -16,10 +19,9 @@ interface ChatMessage {
 @Component({
   selector: 'app-aibantuan',
   templateUrl: 'aibantuan.page.html',
-  standalone: false, // <-- INI KODE YANG ANDA MINTA
+  standalone: false,
 })
 export class AIBantuanPage {
-  // Menggunakan ViewChild untuk mengakses elemen chatBody
   @ViewChild('chatBody') private chatBody!: ElementRef;
 
   features: AiFeature[] = [
@@ -32,11 +34,16 @@ export class AIBantuanPage {
   messages: ChatMessage[] = [
     { sender: 'ai', text: 'Halo! Saya siap membantu Anda dengan tugas-tugas akademik. Apa yang bisa saya bantu hari ini?' }
   ];
-  
-  // Variabel untuk menampung teks dari input field
+  chatHistory: any[] = []; // Variabel untuk menyimpan riwayat chat untuk Gemini
   currentMessage: string = '';
+  // 2. Tambahkan variabel untuk status loading
+  isReplying: boolean = false;
 
-  constructor(private alertController: AlertController) {}
+  constructor(
+    private alertController: AlertController,
+    // 3. Suntikkan (inject) ContentService agar bisa kita gunakan
+    private geminiService: GeminiService // <-- Cukup ini saja
+  ) {}
 
   async openAIFeature(feature: AiFeature) {
     const alert = await this.alertController.create({
@@ -47,29 +54,40 @@ export class AIBantuanPage {
     await alert.present();
   }
 
-  sendMessage() {
+  // 4. GANTI FUNGSI INI DENGAN VERSI BARU YANG TERHUBUNG KE GEMINI
+  async sendMessage() {
     const messageText = this.currentMessage.trim();
-    if (messageText === '') return;
+    // Jangan kirim pesan jika kosong atau jika AI sedang membalas
+    if (messageText === '' || this.isReplying) return;
 
-    // 1. Tambahkan pesan pengguna ke array
+    // Tambahkan pesan pengguna ke tampilan
     this.messages.push({ sender: 'user', text: messageText });
-    this.currentMessage = ''; // Kosongkan input field
+    this.currentMessage = '';
     this.scrollToBottom();
 
-    // 2. Simulasikan jawaban dari AI
-    setTimeout(() => {
-      const responses = [
-          "Pertanyaan yang menarik! Saya akan membantu Anda.",
-          "Baik, saya akan memberikan jawaban lengkap.",
-          "Topik yang bagus! Mari kita bahas ini secara detail.",
-      ];
-      const randomResponse = responses[Math.floor(Math.random() * responses.length)];
-      this.messages.push({ sender: 'ai', text: randomResponse });
+    // Tampilkan indikator "mengetik..." dari AI
+    this.isReplying = true;
+    this.messages.push({ sender: 'ai', text: '...' });
+    this.scrollToBottom();
+
+    try {
+      // Panggil service untuk bertanya ke Gemini melalui Firebase Function
+const aiResponse = await this.geminiService.getChatResponse(messageText, this.chatHistory);      
+      // Ganti pesan "..." dengan jawaban asli dari AI
+      const lastMessageIndex = this.messages.length - 1;
+      this.messages[lastMessageIndex].text = aiResponse;
+
+    } catch (error) {
+      console.error('Error memanggil Gemini:', error);
+      const lastMessageIndex = this.messages.length - 1;
+      this.messages[lastMessageIndex].text = 'Maaf, terjadi kesalahan. Coba lagi nanti.';
+    } finally {
+      // Selesai loading
+      this.isReplying = false;
       this.scrollToBottom();
-    }, 1500);
+    }
   }
   
-  // Fungsi untuk otomatis scroll ke pesan paling bawah
   scrollToBottom(): void {
     setTimeout(() => {
       if (this.chatBody && this.chatBody.nativeElement) {

@@ -13,6 +13,7 @@
   },
   "private": true,
   "dependencies": {
+    
     "@angular/animations": "^20.0.0",
     "@angular/common": "^20.0.0",
     "@angular/compiler": "^20.0.0",
@@ -26,6 +27,7 @@
     "@capacitor/camera": "^7.0.2",
     "@capacitor/core": "^7.4.3",
     "@capacitor/ios": "^7.4.3",
+    "@google/generative-ai": "^0.24.1",
     "@ionic/angular": "^8.0.0",
     "@ionic/pwa-elements": "^3.3.0",
     "firebase": "^12.1.0",

@@ -1,6 +1,8 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData, doc, docData, orderBy, query, addDoc, serverTimestamp, getDoc, deleteDoc, runTransaction, arrayUnion, arrayRemove, increment, updateDoc, where, limit,  getCountFromServer } from '@angular/fire/firestore';
-import { Observable, from, of } from 'rxjs';
+import { Observable, from, of, forkJoin } from 'rxjs';
+import { switchMap, map, tap } from 'rxjs/operators'; // <-- Tambahkan map
+
 
 // Ini adalah "cetak biru" atau blueprint untuk data berita kita
 // Memastikan kode kita tahu persis struktur data yang akan diterima
@@ -47,6 +49,7 @@ export interface Program {
   participants: number;
   badge?: string;
   kategori?: string;
+  target: number;
 }
 export interface Campaign {
   id: string; 
@@ -60,6 +63,15 @@ export interface Campaign {
       createdAt: any;
        trending?: boolean;
         status?: string; // <-- TAMBAHKAN INI
+}
+// Tambahkan ini di dekat interface Anda yang lain
+export interface UserProgram {
+  id: string;
+  userId: string;
+  programId: string;
+  status: string;
+  kemajuan: number;
+  registeredAt: any;
 }
 
 
@@ -82,11 +94,33 @@ export class ContentService {
     const programRef = doc(this.firestore, `programs/${programId}`);
     return docData(programRef, { idField: 'id' }) as Observable<Program>;
   }
-   getRegisteredProgramsForUser(uid: string): Observable<any[]> {
-    const userProgramsRef = collection(this.firestore, 'userPrograms');
-    const q = query(userProgramsRef, where('userId', '==', uid));
-    return collectionData(q, { idField: 'id' });
-  }
+  // Di dalam content.service.ts
+
+// Di dalam content.service.ts
+
+getRegisteredProgramsForUser(uid: string): Observable<any[]> {
+  const userProgramsRef = collection(this.firestore, 'userPrograms');
+  const q = query(userProgramsRef, where('userId', '==', uid));
+  
+  // PERBAIKAN: Tambahkan 'as Observable<UserProgram[]>' di sini
+  return (collectionData(q, { idField: 'id' }) as Observable<UserProgram[]>).pipe(
+    switchMap(userPrograms => {
+      if (userPrograms.length === 0) {
+        return of([]);
+      }
+      
+      // Sekarang 'up' akan otomatis dikenali sebagai UserProgram, error hilang
+      const programObservables = userPrograms.map(up => { 
+        const progRef = doc(this.firestore, `programs/${up.programId}`);
+        return docData(progRef, { idField: 'id' }).pipe(
+          map(programDetails => ({ ...up, programDetails }))
+        );
+      });
+      
+      return forkJoin(programObservables);
+    })
+  );
+}
 getCampaignsForUser(uid: string): Observable<any[]> {
     const campaignsRef = collection(this.firestore, 'campaigns');
     const q = query(campaignsRef, where('userId', '==', uid));
@@ -284,4 +318,48 @@ async simulateDonation(campaign: Campaign): Promise<boolean> {
     console.error("Gagal mengupdate donasi di Firestore:", error);
     return false; // <-- PENTING: Lapor bahwa donasi GAGAL
   }
-}}
+  
+}
+// Fungsi baru untuk menambah progres dan mengecek status
+// GANTI SELURUH FUNGSI ANDA DENGAN INI
+async addProgramProgress(userProgramId: string, newProgressAmount: number) {
+  const userProgramRef = doc(this.firestore, `userPrograms/${userProgramId}`);
+
+  return runTransaction(this.firestore, async (transaction) => {
+    // 1. Ambil data program yang diikuti user
+    const userProgramDoc = await transaction.get(userProgramRef);
+    if (!userProgramDoc.exists()) {
+      throw "Dokumen program pengguna tidak ditemukan!";
+    }
+    // LAKUKAN TYPE CASTING DI SINI
+    const userData = userProgramDoc.data() as UserProgram;
+
+    // 2. Ambil data program utama untuk mendapatkan TARGET
+    const programId = userData.programId; // -- Gunakan variabel baru
+    const programRef = doc(this.firestore, `programs/${programId}`);
+    const programDoc = await transaction.get(programRef);
+    if (!programDoc.exists()) {
+      throw "Dokumen program utama tidak ditemukan!";
+    }
+    // LAKUKAN TYPE CASTING DI SINI
+    const programData = programDoc.data() as Program;
+    
+    const programTarget = programData.target || 0; // <-- Gunakan variabel baru
+    const currentProgress = userData.kemajuan || 0; // <-- Gunakan variabel baru
+    const newTotalProgress = currentProgress + newProgressAmount;
+
+    // 3. Cek apakah target sudah tercapai
+    if (newTotalProgress >= programTarget) {
+      // JIKA SELESAI: Update kemajuan dan ubah status
+      transaction.update(userProgramRef, { 
+        kemajuan: newTotalProgress,
+        status: 'selesai' 
+      });
+      console.log(`Program ${programId} selesai!`);
+    } else {
+      // JIKA BELUM SELESAI: Update kemajuannya saja
+      transaction.update(userProgramRef, { kemajuan: newTotalProgress });
+    }
+  });
+}
+}

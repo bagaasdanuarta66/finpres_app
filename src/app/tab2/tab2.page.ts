@@ -214,7 +214,7 @@ scrollToSettings() {
   async usePoints() {
     const alert = await this.alertController.create({
       header: '⭐ Gunakan Poin',
-      message: 'Gunakan poin untuk:<br>• Daftar program premium<br>• Beli merchandise<br>• Unlock fitur khusus<br>• Donasi ke campaign',
+      message: 'Gunakan poin untuk Donasi ke campaign',
       buttons: ['Tutup']
     });
     await alert.present();
@@ -230,18 +230,24 @@ scrollToSettings() {
   }
 
   async viewPoints() {
-    const alert = await this.alertController.create({
-      header: '⭐ Total Poin',
-      message: 'Total poin yang dikumpulkan: 2,340 poin',
-      buttons: ['Tutup']
-    });
-    await alert.present();
-  }
+  // 1. Ambil data profil terbaru dari observable
+  const profile = await firstValueFrom(this.userProfile$);
+  // 2. Siapkan nilai poin (atau 0 jika profil belum termuat)
+  const userPoints = profile ? profile.poin : 0;
+
+  const alert = await this.alertController.create({
+    header: '⭐ Total Poin',
+    // 3. Gunakan data dinamis di sini dengan template literal (``)
+    message: `Total poin yang dikumpulkan: ${userPoints.toLocaleString('id-ID')} poin`,
+    buttons: ['Tutup']
+  });
+  await alert.present();
+}
 
   async viewStats() {
     const alert = await this.alertController.create({
       header: '📈 Statistik',
-      message: 'Tingkat kelulusan: 89%<br>Peringkat: Top 15%<br>Konsistensi: Sangat Baik',
+      message: 'Tingkat kelulusan Sangat Baik',
       buttons: ['Tutup']
     });
     await alert.present();
@@ -255,7 +261,7 @@ scrollToSettings() {
   async security() {
     const alert = await this.alertController.create({
       header: '🔒 Keamanan Akun',
-      message: 'Fitur keamanan:<br>• Ubah password<br>• Two-factor authentication<br>• Riwayat login<br>• Perangkat terpercaya',
+      message: 'Fitur keamanan: Perangkat terpercaya',
       buttons: ['Tutup']
     });
     await alert.present();

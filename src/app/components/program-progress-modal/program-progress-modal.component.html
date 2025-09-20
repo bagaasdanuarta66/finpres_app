@@ -1,0 +1,21 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Catat Kemajuan</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="cancel()">Batal</ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <p>Anda mencatat kemajuan untuk program yang Anda pilih.</p>
+
+  <ion-item>
+    <ion-label position="floating">Jumlah Kemajuan Baru</ion-label>
+    <ion-input type="number" [(ngModel)]="progressAmount" placeholder="Contoh: 10"></ion-input>
+  </ion-item>
+
+  <ion-button expand="block" (click)="save()" [disabled]="!progressAmount" style="margin-top: 20px;">
+    Simpan
+  </ion-button>
+</ion-content>
