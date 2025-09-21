@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { Firestore, collection, collectionData, doc, docData, orderBy, query, addDoc, serverTimestamp, getDoc, deleteDoc, runTransaction, arrayUnion, arrayRemove, increment, updateDoc, where, limit,  getCountFromServer } from '@angular/fire/firestore';
 import { Observable, from, of, forkJoin } from 'rxjs';
-import { switchMap, map, tap, catchError } from 'rxjs/operators'; // <-- Tambahkan map
+import { switchMap, map, tap, catchError, take } from 'rxjs/operators'; // <-- Tambahkan map
 
 
 // Ini adalah "cetak biru" atau blueprint untuk data berita kita
@@ -103,6 +103,7 @@ getRegisteredProgramsForUser(uid: string): Observable<any[]> {
   const q = query(userProgramsRef, where('userId', '==', uid));
   
   return (collectionData(q, { idField: 'id' }) as Observable<UserProgram[]>).pipe(
+    take(1), // <-- TAMBAHKAN take(1) di sini
     switchMap(userPrograms => {
       if (userPrograms.length === 0) {
         return of([]);
@@ -111,12 +112,11 @@ getRegisteredProgramsForUser(uid: string): Observable<any[]> {
       const programObservables = userPrograms.map(up => { 
         const progRef = doc(this.firestore, `programs/${up.programId}`);
         return docData(progRef, { idField: 'id' }).pipe(
+          take(1), // <-- DAN TAMBAHKAN take(1) di sini
           map(programDetails => ({ ...up, programDetails })),
-          // JIKA TERJADI ERROR (misal, program tidak ditemukan),
-          // jangan hentikan semuanya, tapi kembalikan data seadanya.
           catchError(error => {
-            console.warn(`Peringatan: Detail untuk program ID ${up.programId} tidak ditemukan.`, error);
-            return of({ ...up, programDetails: null }); // Kembalikan data pendaftaran tanpa detail
+            console.warn(`Peringatan: Gagal mengambil detail untuk program ID ${up.programId}.`, error);
+            return of({ ...up, programDetails: null });
           })
         );
       });
@@ -125,6 +125,7 @@ getRegisteredProgramsForUser(uid: string): Observable<any[]> {
     })
   );
 }
+
 getCampaignsForUser(uid: string): Observable<any[]> {
     const campaignsRef = collection(this.firestore, 'campaigns');
     const q = query(campaignsRef, where('userId', '==', uid));

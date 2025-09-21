@@ -1,8 +1,6 @@
 import { Component, ViewChild, ElementRef } from '@angular/core';
 import { AlertController } from '@ionic/angular';
-// 1. Impor ContentService
-import { ContentService } from '../services/content.service';
-import { GeminiService } from '../services/gemini.service'; // Pastikan ini di-import
+import { GeminiService } from '../services/gemini.service';
 
 interface AiFeature {
   id: string;
@@ -19,7 +17,7 @@ interface ChatMessage {
 @Component({
   selector: 'app-aibantuan',
   templateUrl: 'aibantuan.page.html',
-  standalone: false,
+  standalone : false,
 })
 export class AIBantuanPage {
   @ViewChild('chatBody') private chatBody!: ElementRef;
@@ -34,15 +32,16 @@ export class AIBantuanPage {
   messages: ChatMessage[] = [
     { sender: 'ai', text: 'Halo! Saya siap membantu Anda dengan tugas-tugas akademik. Apa yang bisa saya bantu hari ini?' }
   ];
-  chatHistory: any[] = []; // Variabel untuk menyimpan riwayat chat untuk Gemini
+  
+  // Variabel untuk menyimpan riwayat chat untuk Gemini
+  chatHistory: any[] = [];
+  
   currentMessage: string = '';
-  // 2. Tambahkan variabel untuk status loading
   isReplying: boolean = false;
 
   constructor(
     private alertController: AlertController,
-    // 3. Suntikkan (inject) ContentService agar bisa kita gunakan
-    private geminiService: GeminiService // <-- Cukup ini saja
+    private geminiService: GeminiService
   ) {}
 
   async openAIFeature(feature: AiFeature) {
@@ -54,35 +53,37 @@ export class AIBantuanPage {
     await alert.present();
   }
 
-  // 4. GANTI FUNGSI INI DENGAN VERSI BARU YANG TERHUBUNG KE GEMINI
   async sendMessage() {
     const messageText = this.currentMessage.trim();
-    // Jangan kirim pesan jika kosong atau jika AI sedang membalas
     if (messageText === '' || this.isReplying) return;
 
-    // Tambahkan pesan pengguna ke tampilan
+    // Tambahkan pesan ke tampilan layar
     this.messages.push({ sender: 'user', text: messageText });
+    // TAMBAHKAN PESAN PENGGUNA KE RIWAYAT UNTUK DIKIRIM KE GEMINI
+    this.chatHistory.push({ role: "user", parts: [{ text: messageText }] });
+
     this.currentMessage = '';
     this.scrollToBottom();
 
-    // Tampilkan indikator "mengetik..." dari AI
     this.isReplying = true;
     this.messages.push({ sender: 'ai', text: '...' });
     this.scrollToBottom();
 
     try {
-      // Panggil service untuk bertanya ke Gemini melalui Firebase Function
-const aiResponse = await this.geminiService.getChatResponse(messageText, this.chatHistory);      
-      // Ganti pesan "..." dengan jawaban asli dari AI
+      // Panggil service Gemini dan kirimkan riwayatnya
+      const aiResponse = await this.geminiService.getChatResponse(messageText, this.chatHistory);
+      
       const lastMessageIndex = this.messages.length - 1;
       this.messages[lastMessageIndex].text = aiResponse;
 
+      // TAMBAHKAN JAWABAN AI KE RIWAYAT UNTUK PERCAKAPAN SELANJUTNYA
+      this.chatHistory.push({ role: "model", parts: [{ text: aiResponse }] });
+
     } catch (error) {
-      console.error('Error memanggil Gemini:', error);
+      console.error('Error:', error);
       const lastMessageIndex = this.messages.length - 1;
-      this.messages[lastMessageIndex].text = 'Maaf, terjadi kesalahan. Coba lagi nanti.';
+      this.messages[lastMessageIndex].text = 'Maaf, terjadi kesalahan.';
     } finally {
-      // Selesai loading
       this.isReplying = false;
       this.scrollToBottom();
     }
