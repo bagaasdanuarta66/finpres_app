@@ -8,7 +8,11 @@
       <ion-label>Program Saya</ion-label>
     </ion-segment-button>
   </ion-segment>
-
+<ion-fab vertical="top" horizontal="end" slot="fixed" *ngIf="authService.isAdmin$ | async">
+  <ion-fab-button (click)="tambahProgramBaru()">
+    <ion-icon name="add-outline"></ion-icon>
+  </ion-fab-button>
+</ion-fab>
   <div [ngSwitch]="selectedSegment">
 
     <div *ngSwitchCase="'semua'">
@@ -45,8 +49,10 @@
           <div style="display: flex; flex-direction: column; gap: 20px;">
             <ng-container *ngFor="let prog of allPrograms$ | async">
               <div *ngIf="activeCategory === 'semua' || prog.kategori === activeCategory">
-                <div (click)="viewProgram(prog)" style="cursor: pointer; background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 20px; padding: 25px; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); position: relative;">
-                  <div *ngIf="prog.badge" style="position: absolute; top: 15px; right: 15px; color: white; padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 700; background: #e84393;">{{ prog.badge }}</div>
+<div 
+  [class.expired]="prog.isExpired" 
+  (click)="!prog.isExpired && viewProgram(prog)" 
+  style="cursor: pointer; background: rgba(255, 255, 255, 0.95); border: 1px solid rgba(74, 144, 226, 0.2); border-radius: 20px; padding: 25px; box-shadow: 0 8px 32px rgba(74, 144, 226, 0.1); position: relative; transition: opacity 0.3s ease, filter 0.3s ease;">                  <div *ngIf="prog.badge" style="position: absolute; top: 15px; right: 15px; color: white; padding: 4px 10px; border-radius: 12px; font-size: 10px; font-weight: 700; background: #e84393;">{{ prog.badge }}</div>
                   <div style="display: flex; align-items: flex-start; gap: 20px; margin-bottom: 20px;">
                     <div style="width: 70px; height: 70px; border-radius: 20px; display: flex; align-items: center; justify-content: center; font-size: 32px; color: white; flex-shrink: 0; background: linear-gradient(135deg, #4A90E2, #6BB6FF);">{{ prog.icon }}</div>
                     <div style="flex: 1;">
@@ -76,13 +82,13 @@
           <p>Anda belum mengikuti program apapun.</p>
         </div>
         <ng-template #myProgramList>
-          <ion-item button *ngFor="let prog of programs" (click)="openProgressModal(prog)">
-            <ion-icon name="trophy-outline" slot="start" color="primary"></ion-icon>
-            <ion-label>
-              <h2>{{ prog.programDetails?.title }}</h2>
-              <p>Status: {{ prog.status }} | Kemajuan: {{ prog.kemajuan }}</p>
-            </ion-label>
-          </ion-item>
+         <ion-item button *ngFor="let prog of programs" (click)="openProgressModal(prog)">
+  <ion-icon name="trophy-outline" slot="start" color="primary"></ion-icon>
+  <ion-label>
+    <h2>{{ prog.programDetails?.title }}</h2>
+    <p>Status: {{ prog.status }} | Kemajuan: {{ prog.kemajuan }} / {{ prog.programDetails?.target }}</p>
+  </ion-label>
+</ion-item>
         </ng-template>
       </ion-list>
       <ng-template #loadingMyPrograms>

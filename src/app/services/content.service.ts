@@ -50,6 +50,7 @@ export interface Program {
   badge?: string;
   kategori?: string;
   target: number;
+  isExpired?: boolean; // <-- TAMBAHKAN BARIS INI
 }
 export interface Campaign {
   id: string; 

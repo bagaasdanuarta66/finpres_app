@@ -6,7 +6,7 @@ import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signO
 import { Firestore, doc, setDoc, docData, updateDoc, collection, addDoc, deleteDoc } from '@angular/fire/firestore';
 import { Photo } from '@capacitor/camera';
 import { HttpClient } from '@angular/common/http'; 
-
+import { map, switchMap } from 'rxjs/operators'; // <-- PASTIKAN INI DIIMP
 // Pastikan interface-nya lengkap
 export interface UserProfile {
   uid: string;
@@ -14,6 +14,10 @@ export interface UserProfile {
   namaLengkap?: string;
   sekolah?: string;
   photoURL?: string; // <-- 2. Pastikan properti ini ada
+  saldo?: number; // <-- Tambahan
+  poin?: number;  // <-- Tambahan
+  role?: 'admin' | 'user';
+  
 }
 
 @Injectable({
@@ -22,12 +26,28 @@ export interface UserProfile {
 export class AuthService {
 
   currentUser$ = authState(this.auth);
+  isAdmin$: Observable<boolean>; // <-- PASTIKAN PROPERTI INI ADA
 
   constructor(
     private auth: Auth,
     private firestore: Firestore,
     private http: HttpClient // <-- 3. Ganti 'Storage' dengan 'HttpClient'
-  ) {}
+  ) { this.isAdmin$ = this.currentUser$.pipe(
+      switchMap(user => {
+        if (user) {
+          // Jika user login, cek ke koleksi 'admins'
+          const adminDocRef = doc(this.firestore, `admins/${user.uid}`);
+          // Menggunakan docData untuk mendapatkan stream, lalu map hasilnya ke boolean
+          return docData(adminDocRef).pipe(
+            map(adminDoc => !!adminDoc) // Jika dokumen ada, hasilnya true, jika tidak, false
+          );
+        } else {
+          // Jika tidak ada user yang login, hasilnya false
+          return of(false);
+        }
+      })
+    );
+  }
 
   // Fungsi uploadAvatar dengan logika Cloudinary
    async uploadImage(photo: Photo, folder: string) {

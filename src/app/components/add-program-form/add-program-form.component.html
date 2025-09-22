@@ -1,0 +1,62 @@
+<ion-header style="box-shadow: none;">
+  <ion-toolbar style="--background: linear-gradient(135deg, #ffffff 0%, #FAFBFC 100%); --border-width: 0; border-bottom: 1px solid rgba(74, 144, 226, 0.1);">
+    <ion-title style="font-weight: 700; color: #2C3E50;">Tambah Program Baru</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="dismissModal()" style="--color: #4A90E2;">
+        <ion-icon name="close-outline" slot="icon-only" style="font-size: 24px;"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content [fullscreen]="true" style="--background: linear-gradient(135deg, #f8fbff 0%, #e8f4fd 100%); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;">
+  <form [formGroup]="programForm" (ngSubmit)="onSubmit()" style="padding: 20px;">
+    <ion-list style="background: transparent;">
+      
+      <ion-item lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 20px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px;">
+        <ion-label position="floating" style="color: #5A6C7D; font-weight: 500;">Judul Program</ion-label>
+        <ion-input formControlName="title" type="text" required style="--color: #2C3E50; font-size: 16px;"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 20px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px;">
+        <ion-label position="floating" style="color: #5A6C7D; font-weight: 500;">Penyelenggara</ion-label>
+        <ion-input formControlName="organizer" type="text" style="--color: #2C3E50; font-size: 16px;"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 20px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px;">
+        <ion-label position="floating" style="color: #5A6C7D; font-weight: 500;">Deskripsi Singkat</ion-label>
+        <ion-textarea formControlName="desc" rows="3" style="--color: #2C3E50; font-size: 16px;"></ion-textarea>
+      </ion-item>
+
+      <ion-item lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 20px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px;">
+        <ion-label style="color: #5A6C7D; font-weight: 500;">Kategori</ion-label>
+        <ion-select formControlName="kategori" interface="popover" style="--placeholder-color: #a3b1c6; color: #2C3E50; font-size: 16px; width: 100%; max-width: 100%;">
+          <ion-select-option value="kompetisi">Kompetisi</ion-select-option>
+          <ion-select-option value="sosial">Project Sosial</ion-select-option>
+          <ion-select-option value="seni">Seni & Pentas</ion-select-option>
+          <ion-select-option value="sains">Project Sains</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 20px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px;">
+        <ion-label position="floating" style="color: #5A6C7D; font-weight: 500;">Hadiah Poin</ion-label>
+        <ion-input formControlName="points" type="number" style="--color: #2C3E50; font-size: 16px;"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 20px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px;">
+        <ion-label position="floating" style="color: #5A6C7D; font-weight: 500;">Target Kemajuan</ion-label>
+        <ion-input formControlName="target" type="number" style="--color: #2C3E50; font-size: 16px;"></ion-input>
+      </ion-item>
+
+      <ion-item lines="none" style="--background: rgba(255, 255, 255, 0.95); --border-radius: 15px; border: 1px solid rgba(74, 144, 226, 0.2); margin-bottom: 20px; box-shadow: 0 4px 16px rgba(74, 144, 226, 0.05); --padding-start: 15px;">
+        <ion-label style="color: #5A6C7D; font-weight: 500;">Deadline</ion-label>
+        <ion-input formControlName="deadline" type="date" style="--color: #2C3E50; font-size: 16px;"></ion-input>
+      </ion-item>
+
+    </ion-list>
+
+    <ion-button expand="block" type="submit" [disabled]="programForm.invalid" style="--background: linear-gradient(135deg, #4A90E2, #6BB6FF); --border-radius: 25px; --box-shadow: 0 4px 16px rgba(74, 144, 226, 0.25); height: 50px; text-transform: none; font-size: 16px; font-weight: 600; margin-top: 10px;">
+      Simpan Program
+    </ion-button>
+  </form>
+</ion-content>

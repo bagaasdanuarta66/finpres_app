@@ -8,3 +8,9 @@
   ion-content {
     --background: linear-gradient(135deg, #f8fbff 0%, #e8f4fd 100%) !important;
   }
+  // Tambahkan ini di paling bawah file tab4.page.scss
+.expired {
+  opacity: 0.5;
+  cursor: not-allowed !important;
+  filter: grayscale(80%);
+}
