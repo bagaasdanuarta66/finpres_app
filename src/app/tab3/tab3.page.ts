@@ -2,7 +2,7 @@
 
 import { Component } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
+import { Observable, firstValueFrom } from 'rxjs';
 import { switchMap } from 'rxjs/operators';
 import { AuthService } from '../services/auth.service';
 import { Firestore, collection, query, orderBy, collectionData } from '@angular/fire/firestore';
@@ -49,27 +49,55 @@ export class Tab3Page {
   async createCampaign() {
     this.router.navigate(['/pages/add-campaign']); // Kita akan buat halaman ini
   }
-   // --- FUNGSI BARU UNTUK SIMULASI DONASI ---
-  // GANTI SELURUH FUNGSI 'donate' LAMA ANDA DENGAN YANG INI:
+   // Di dalam file tab3.page.ts
 
-async donate(campaign: Campaign) { // <-- PERUBAHAN #1: Hanya menerima 1 parameter
-  // event.stopPropagation() sudah kita pindah dan tangani di HTML
+// GANTI FUNGSI 'donate' YANG LAMA DENGAN INI
+async donateWithPoints(campaign: any) {
+  const alert = await this.alertController.create({
+    header: 'Donasi dengan Poin',
+    message: `Masukkan jumlah poin yang ingin Anda donasikan ke campaign "${campaign.title}".`,
+    inputs: [
+      {
+        name: 'points',
+        type: 'number',
+        placeholder: 'Contoh: 100',
+        min: 1
+      },
+    ],
+    buttons: [
+      {
+        text: 'Batal',
+        role: 'cancel',
+      },
+      {
+        text: 'Donasi',
+        handler: async (data) => {
+          const pointsToDonate = parseInt(data.points, 10);
+          if (isNaN(pointsToDonate) || pointsToDonate <= 0) {
+            this.presentToast('Jumlah poin tidak valid.');
+            return;
+          }
 
-  try {
-    // Panggil service dan TANGKAP HASILNYA (true atau false)
-    const isSuccess = await this.contentService.simulateDonation(campaign);
+          const user = await firstValueFrom(this.authService.currentUser$);
+          if (!user) {
+            this.presentToast('Anda harus login untuk berdonasi.');
+            return;
+          }
 
-    // PERUBAHAN #2: Hanya tampilkan toast JIKA donasi berhasil (isSuccess bernilai true)
-    if (isSuccess) {
-      this.presentToast('Terima kasih! Donasi Anda telah dicatat.');
-    }
-    // Jika isSuccess bernilai false (karena campaign sudah 100%), 
-    // maka tidak akan terjadi apa-apa, sesuai keinginan kita.
+          try {
+            await this.contentService.donateWithPoints(campaign.id, user.uid, pointsToDonate);
+            this.presentToast('Terima kasih! Donasi poin Anda berhasil.');
+          } catch (error: any) {
+            console.error('Gagal donasi poin:', error);
+            // Menampilkan pesan error yang lebih spesifik dari service
+            this.presentToast(error.message || 'Terjadi kesalahan.');
+          }
+        },
+      },
+    ],
+  });
 
-  } catch (error) {
-    console.error('Gagal melakukan donasi simulasi', error);
-    this.presentToast('Gagal mencatat donasi. Coba lagi.');
-  }
+  await alert.present();
 }
 
    // --- TAMBAHKAN FUNGSI BARU INI UNTUK KONFIRMASI HAPUS ---

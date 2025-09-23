@@ -415,4 +415,35 @@ async isUserRegistered(programId: string, userId: string): Promise<boolean> {
   
   // Jika hasil query tidak kosong (ada dokumen), berarti sudah terdaftar
   return !querySnapshot.empty;
+}
+async donateWithPoints(campaignId: string, userId: string, pointsToDonate: number) {
+  // Referensi ke dokumen campaign dan user
+  const campaignRef = doc(this.firestore, `campaigns/${campaignId}`);
+  const userRef = doc(this.firestore, `users/${userId}`);
+
+  // Gunakan transaction untuk keamanan data
+  return runTransaction(this.firestore, async (transaction) => {
+    const userDoc = await transaction.get(userRef);
+    const campaignDoc = await transaction.get(campaignRef);
+
+    if (!userDoc.exists() || !campaignDoc.exists()) {
+      throw new Error("User atau Campaign tidak ditemukan!");
+    }
+
+    const currentUserPoints = userDoc.data()['poin'] || 0;
+    const currentDana = campaignDoc.data()['danaTerkumpul'] || 0;
+
+    // Cek apakah poin pengguna mencukupi
+    if (currentUserPoints < pointsToDonate) {
+      throw new Error("Poin Anda tidak mencukupi!");
+    }
+
+    // Lakukan perhitungan
+    const newUserPoints = currentUserPoints - pointsToDonate;
+    const newDanaTerkumpul = currentDana + pointsToDonate; // Asumsi 1 Poin = 1 Rupiah
+
+    // Simpan data baru
+    transaction.update(userRef, { poin: newUserPoints });
+    transaction.update(campaignRef, { danaTerkumpul: newDanaTerkumpul });
+  });
 }}

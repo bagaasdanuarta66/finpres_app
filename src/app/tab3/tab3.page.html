@@ -56,10 +56,11 @@
           <div style="font-size: 12px; color: #5A6C7D; font-weight: 500;">Target: {{ campaign.targetDana | currency:'IDR':'Rp ' }}</div>
           
           <div *ngIf="campaign.status !== 'selesai'; else campaignFinished">
-            <button (click)="donate(campaign); $event.stopPropagation()" style="background: #10B981; color: white; border: none; padding: 8px 16px; border-radius: 15px; font-size: 12px; font-weight: 600; cursor: pointer;">
-              <ion-icon name="heart-outline" style="margin-right: 5px;"></ion-icon>
-              Donasi
-            </button>
+            <button (click)="donateWithPoints(campaign); $event.stopPropagation()" 
+        style="background: linear-gradient(135deg, #8e44ad, #9b59b6); color: white; border: none; padding: 8px 16px; border-radius: 15px; font-size: 12px; font-weight: 600; cursor: pointer;">
+  <ion-icon name="star-outline" style="margin-right: 5px;"></ion-icon>
+  Donasi Poin
+</button>
           </div>
 
           <ng-template #campaignFinished>
