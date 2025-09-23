@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { Firestore, collection, collectionData, doc, docData, orderBy, query, addDoc, serverTimestamp, getDoc, deleteDoc, runTransaction, arrayUnion, arrayRemove, increment, updateDoc, where, limit,  getCountFromServer } from '@angular/fire/firestore';
+import { Firestore, collection, collectionData, doc, docData, orderBy, query, addDoc, serverTimestamp, getDoc, deleteDoc, runTransaction, arrayUnion, arrayRemove, increment, updateDoc, where, limit,  getCountFromServer, DocumentReference, getDocs } from '@angular/fire/firestore';
 import { Observable, from, of, forkJoin } from 'rxjs';
 import { switchMap, map, tap, catchError, take } from 'rxjs/operators'; // <-- Tambahkan map
 
@@ -162,27 +162,39 @@ getCompletedProgramsCount(uid: string): Observable<number> {
   return from(countPromise);
 }
   
-  async registerForProgram(programId: string, userId: string): Promise<void> {
-    const programRef = doc(this.firestore, `programs/${programId}`);
-    const userProgramRef = doc(this.firestore, `userPrograms/${userId}_${programId}`);
+ async registerForProgram(programId: string, userId: string) {
+  const programRef = doc(this.firestore, `programs/${programId}`);
+  const userProgramRef = doc(collection(this.firestore, 'userPrograms'));
 
-    return runTransaction(this.firestore, async (transaction) => {
-      const userProgramDoc = await transaction.get(userProgramRef);
-      if (userProgramDoc.exists()) {
-        throw new Error("Anda sudah terdaftar di program ini.");
+  try {
+    await runTransaction(this.firestore, async (transaction) => {
+      const programDoc = await transaction.get(programRef);
+      if (!programDoc.exists()) {
+        throw new Error("Program tidak ditemukan!");
       }
-      transaction.set(userProgramRef, {
+      
+      // PERBAIKAN DI SINI: Gunakan ['participants'] bukan .participants
+      const currentParticipants = programDoc.data()['participants'] || 0;
+
+      const newUserProgramData = {
         userId: userId,
         programId: programId,
         status: 'berjalan',
         kemajuan: 0,
-        registeredAt: serverTimestamp()
-      });
-      transaction.update(programRef, {
-        participants: increment(1)
+        registeredAt: new Date()
+      };
+
+      transaction.set(userProgramRef, newUserProgramData);
+      transaction.update(programRef, { 
+        participants: currentParticipants + 1 
       });
     });
+
+  } catch (e) {
+    console.error("Transaction gagal: ", e);
+    throw e;
   }
+}
   // --- SEMUA FUNGSI LAIN ADA DI BAWAH CONSTRUCTOR ---
 
   getNewsArticles(): Observable<NewsArticle[]> {
@@ -326,46 +338,81 @@ async simulateDonation(campaign: Campaign): Promise<boolean> {
   }
   
 }
-// Fungsi baru untuk menambah progres dan mengecek status
-// GANTI SELURUH FUNGSI ANDA DENGAN INI
-async addProgramProgress(userProgramId: string, newProgressAmount: number) {
+
+// Di dalam file content.service.ts
+
+// GANTI SELURUH FUNGSI LAMA DENGAN VERSI BARU INI
+async addProgramProgress(userProgramId: string, newProgress: number) {
+  // Referensi ke dokumen pendaftaran program milik user
   const userProgramRef = doc(this.firestore, `userPrograms/${userProgramId}`);
 
-  return runTransaction(this.firestore, async (transaction) => {
-    // 1. Ambil data program yang diikuti user
-    const userProgramDoc = await transaction.get(userProgramRef);
-    if (!userProgramDoc.exists()) {
-      throw "Dokumen program pengguna tidak ditemukan!";
-    }
-    // LAKUKAN TYPE CASTING DI SINI
-    const userData = userProgramDoc.data() as UserProgram;
+  try {
+    await runTransaction(this.firestore, async (transaction) => {
+      // 1. Ambil data pendaftaran program saat ini
+      const userProgramDoc = await transaction.get(userProgramRef);
+      if (!userProgramDoc.exists()) {
+        throw new Error("Data pendaftaran program tidak ditemukan!");
+      }
+      const userProgramData = userProgramDoc.data();
 
-    // 2. Ambil data program utama untuk mendapatkan TARGET
-    const programId = userData.programId; // -- Gunakan variabel baru
-    const programRef = doc(this.firestore, `programs/${programId}`);
-    const programDoc = await transaction.get(programRef);
-    if (!programDoc.exists()) {
-      throw "Dokumen program utama tidak ditemukan!";
-    }
-    // LAKUKAN TYPE CASTING DI SINI
-    const programData = programDoc.data() as Program;
-    
-    const programTarget = programData.target || 0; // <-- Gunakan variabel baru
-    const currentProgress = userData.kemajuan || 0; // <-- Gunakan variabel baru
-    const newTotalProgress = currentProgress + newProgressAmount;
+      // Ambil data program utama untuk mendapatkan info target dan poin
+      // PERBAIKAN: Gunakan ['programId']
+      const programRef = doc(this.firestore, `programs/${userProgramData['programId']}`);
+      const programDoc = await transaction.get(programRef);
+      if (!programDoc.exists()) {
+        throw new Error("Data program utama tidak ditemukan!");
+      }
+      const programData = programDoc.data();
+      
+      const target = programData['target'];
+      const pointsReward = programData['points'];
+      // PERBAIKAN: Gunakan ['kemajuan']
+      const currentProgress = userProgramData['kemajuan'] || 0;
+      const totalProgress = currentProgress + newProgress;
 
-    // 3. Cek apakah target sudah tercapai
-    if (newTotalProgress >= programTarget) {
-      // JIKA SELESAI: Update kemajuan dan ubah status
-      transaction.update(userProgramRef, { 
-        kemajuan: newTotalProgress,
-        status: 'selesai' 
+      let finalProgress = totalProgress;
+      // PERBAIKAN: Gunakan ['status']
+      let newStatus = userProgramData['status'];
+
+      // 2. Logika untuk Cek Target dan Update Status
+      if (totalProgress >= target) {
+        finalProgress = target; 
+        newStatus = 'selesai';
+
+        // 3. LOGIKA BONUS: Berikan Poin jika status baru menjadi 'selesai'
+        // PERBAIKAN: Gunakan ['status']
+        if (userProgramData['status'] !== 'selesai') {
+            // PERBAIKAN: Gunakan ['userId']
+            const userRef = doc(this.firestore, `users/${userProgramData['userId']}`);
+            const userDoc = await transaction.get(userRef);
+            if (userDoc.exists()) {
+                const currentPoints = userDoc.data()['poin'] || 0;
+                transaction.update(userRef, { poin: currentPoints + pointsReward });
+            }
+        }
+      }
+
+      // 4. Simpan data kemajuan dan status yang baru
+      transaction.update(userProgramRef, {
+        kemajuan: finalProgress,
+        status: newStatus
       });
-      console.log(`Program ${programId} selesai!`);
-    } else {
-      // JIKA BELUM SELESAI: Update kemajuannya saja
-      transaction.update(userProgramRef, { kemajuan: newTotalProgress });
-    }
-  });
+    });
+  } catch (e) {
+    console.error("Gagal mengupdate progres:", e);
+    throw e;
+  }
 }
-}
+async isUserRegistered(programId: string, userId: string): Promise<boolean> {
+  // Buat query untuk mencari di koleksi 'userPrograms'
+  const q = query(
+    collection(this.firestore, 'userPrograms'),
+    where('programId', '==', programId),
+    where('userId', '==', userId)
+  );
+
+  const querySnapshot = await getDocs(q);
+  
+  // Jika hasil query tidak kosong (ada dokumen), berarti sudah terdaftar
+  return !querySnapshot.empty;
+}}

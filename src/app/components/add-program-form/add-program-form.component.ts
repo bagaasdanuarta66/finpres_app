@@ -25,7 +25,7 @@ export class AddProgramFormComponent implements OnInit {
       points: [0, Validators.required],
       target: [0, Validators.required],
       deadline: ['', Validators.required],
-      icon: ['🏆'],
+       icon: ['', Validators.required], // <-- UBAH BARIS INI
       badge: ['BARU'], // Properti ini hanya untuk tampilan, akan kita hapus saat submit
       participants: [0]
     });

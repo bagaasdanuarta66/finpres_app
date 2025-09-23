@@ -97,7 +97,7 @@ getUserProfile(userId: string) {
     // Simpan data dari form, lalu tambahkan info tambahan
     return await addDoc(programsRef, {
       ...programData, // Ini berisi namaProgram dan targetDana
-      danaTerkumpul: 0, // Setiap program baru dimulai dengan dana 0
+       // Setiap program baru dimulai dengan dana 0
       userId: userId,
       createdAt: new Date(),
     });

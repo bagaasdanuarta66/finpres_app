@@ -30,32 +30,44 @@ export class ProgramDetailPage implements OnInit {
 
   ngOnInit() {}
 
-  async register() {
-    // --- PERBAIKAN UTAMA ADA DI SINI ---
-    // Menggunakan 'firstValueFrom' untuk mengambil data user secara asinkron.
-    // Ini lebih aman karena menunggu sampai status login benar-benar terkonfirmasi.
-    const user = await firstValueFrom(this.authService.currentUser$);
-    
-    if (!user) {
-      this.presentToast('Anda harus login untuk mendaftar.');
-      return;
-    }
+  // Di dalam file program-detail.page.ts
 
-    const loading = await this.loadingCtrl.create({ message: 'Mendaftarkan...' });
-    await loading.present();
-
-    try {
-      await this.contentService.registerForProgram(this.programId, user.uid);
-      await loading.dismiss();
-      this.presentToast('🎉 Selamat! Anda berhasil terdaftar.');
-      this.router.navigateByUrl('/tabs/tab4');
-    } catch (error: any) {
-      await loading.dismiss();
-      console.error('Gagal mendaftar:', error);
-      this.presentToast(error.message || 'Gagal mendaftar. Coba lagi.');
-    }
+async register() {
+  const user = await firstValueFrom(this.authService.currentUser$);
+  
+  if (!user) {
+    this.presentToast('Anda harus login untuk mendaftar.');
+    return;
   }
 
+  const loading = await this.loadingCtrl.create({ message: 'Memeriksa pendaftaran...' });
+  await loading.present();
+
+  try {
+    // --- LANGKAH PENGECEKAN BARU ---
+    const alreadyRegistered = await this.contentService.isUserRegistered(this.programId, user.uid);
+    if (alreadyRegistered) {
+      await loading.dismiss();
+      this.presentToast('Anda sudah terdaftar di program ini.');
+      return; // Hentikan proses jika sudah terdaftar
+    }
+    // ---------------------------------
+
+    // Jika belum terdaftar, lanjutkan proses pendaftaran
+    loading.message = 'Mendaftarkan...'; // Update pesan loading
+    
+    await this.contentService.registerForProgram(this.programId, user.uid);
+    
+    await loading.dismiss();
+    this.presentToast('🎉 Selamat! Anda berhasil terdaftar.');
+    this.router.navigateByUrl('/tabs/tab4');
+
+  } catch (error: any) {
+    await loading.dismiss();
+    console.error('Gagal mendaftar:', error);
+    this.presentToast(error.message || 'Gagal mendaftar. Coba lagi.');
+  }
+}
   async presentToast(message: string) {
     const toast = await this.toastCtrl.create({
       message: message,
