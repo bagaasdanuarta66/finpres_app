@@ -70,11 +70,19 @@ const routes: Routes = [
 {
   path: 'program-detail/:id',
   loadChildren: () => import('./program-detail/program-detail.module').then( m => m.ProgramDetailPageModule)
-},  {
+},
+  {
     path: 'help-center',
     loadChildren: () => import('./help-center/help-center.module').then( m => m.HelpCenterPageModule)
   },
-
+  {
+    path: 'riwayat-transaksi',
+    loadChildren: () => import('./pages/riwayat-transaksi/riwayat-transaksi.module').then( m => m.RiwayatTransaksiPageModule)
+  },
+{
+    path: 'riwayat-transaksi',
+    loadChildren: () => import('./pages/riwayat-transaksi/riwayat-transaksi.module').then( m => m.RiwayatTransaksiPageModule)
+  },
   
 
 

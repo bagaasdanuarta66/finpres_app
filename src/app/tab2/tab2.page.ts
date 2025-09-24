@@ -36,6 +36,7 @@ export class Tab2Page implements OnInit {
     private router: Router,
     private alertController: AlertController,
     public notificationService: NotificationService,
+    
   
       private toastController: ToastController 
   ) {
@@ -184,14 +185,49 @@ scrollToSettings() {
     settingsEl.scrollIntoView({ behavior: 'smooth' });
   }
 }
-  async topUp() {
+  // TAMBAHKAN FUNGSI BARU INI
+  async showTopUpPrompt() {
     const alert = await this.alertController.create({
-      header: '💳 Top Up Saldo',
-      message: 'Metode pembayaran:Silahkan Hubungi Admin',
-      buttons: ['Tutup']
+      header: 'Isi Saldo',
+      message: 'Masukkan jumlah saldo yang ingin ditambahkan.',
+      inputs: [
+        {
+          name: 'amount',
+          type: 'number',
+          placeholder: 'Contoh: 50000',
+          min: 1000
+        }
+      ],
+      buttons: [
+        { text: 'Batal', role: 'cancel' },
+        {
+          text: 'OK',
+          handler: async (data) => {
+            const amount = parseInt(data.amount, 10);
+            if (isNaN(amount) || amount <= 0) {
+              this.presentToast('Jumlah tidak valid.');
+              return;
+            }
+
+            const user = await firstValueFrom(this.authService.currentUser$);
+            if (!user) return;
+
+            try {
+              await this.authService.topUpSaldo(user.uid, amount);
+              this.presentToast('Saldo berhasil ditambahkan!');
+            } catch (error) {
+              console.error('Gagal top up:', error);
+              this.presentToast('Gagal menambahkan saldo.');
+            }
+          }
+        }
+      ]
     });
+
     await alert.present();
   }
+ 
+
 
   async viewHistory() {
     const alert = await this.alertController.create({
@@ -320,4 +356,48 @@ scrollToSettings() {
   goToAddTransactionPage() {
     this.router.navigate(['/pages/add-transaction']);
   }
+  async showKonversiPrompt() {
+  // Ambil data user terkini untuk mendapatkan jumlah poin
+  const user = await firstValueFrom(this.authService.currentUser$);
+  if (!user) return;
+  const currentPoints = (user as any)['poin'] || 0;
+
+  const alert = await this.alertController.create({
+    header: 'Konversi Poin',
+    message: `Poin Anda saat ini: ${currentPoints}. Masukkan jumlah poin yang ingin dikonversi ke saldo (1 Poin = Rp 1).`,
+    inputs: [
+      {
+        name: 'points',
+        type: 'number',
+        placeholder: `Maks: ${currentPoints}`,
+        min: 1,
+        max: currentPoints
+      }
+    ],
+    buttons: [
+      { text: 'Batal', role: 'cancel' },
+      {
+        text: 'Konversi',
+        handler: async (data) => {
+          const points = parseInt(data.points, 10);
+          if (isNaN(points) || points <= 0) {
+            this.presentToast('Jumlah poin tidak valid.');
+            return;
+          }
+
+          try {
+            await this.authService.konversiPoin(user.uid, points);
+            this.presentToast('Poin berhasil dikonversi ke saldo!');
+          } catch (error: any) {
+            console.error('Gagal konversi:', error);
+            // Menampilkan pesan error dari service, misal "Poin tidak mencukupi"
+            this.presentToast(error.message || 'Gagal melakukan konversi.');
+          }
+        }
+      }
+    ]
+  });
+
+  await alert.present();
+}
 }

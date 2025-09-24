@@ -3,7 +3,7 @@
 import { Injectable } from '@angular/core';
 import { Observable, of, firstValueFrom } from 'rxjs'; // 'firstValueFrom' ditambahkan
 import { Auth, createUserWithEmailAndPassword, signInWithEmailAndPassword, signOut, authState } from '@angular/fire/auth';
-import { Firestore, doc, setDoc, docData, updateDoc, collection, addDoc, deleteDoc } from '@angular/fire/firestore';
+import { Firestore, doc, setDoc, docData, updateDoc, collection, addDoc, deleteDoc, runTransaction,query, where, orderBy, collectionData } from '@angular/fire/firestore';
 import { Photo } from '@capacitor/camera';
 import { HttpClient } from '@angular/common/http'; 
 import { map, switchMap } from 'rxjs/operators'; // <-- PASTIKAN INI DIIMP
@@ -162,4 +162,88 @@ getUserProfile(userId: string) {
   async logout(): Promise<void> {
     await signOut(this.auth);
   }
+  async topUpSaldo(userId: string, amount: number) {
+  // Referensi ke dokumen user dan koleksi transactions
+  const userDocRef = doc(this.firestore, `users/${userId}`);
+  const transactionColRef = collection(this.firestore, 'transactions');
+  
+  // Gunakan transaction untuk memastikan kedua operasi (update & create) berhasil
+  return runTransaction(this.firestore, async (transaction) => {
+    // 1. Ambil data user saat ini
+    const userDoc = await transaction.get(userDocRef);
+    if (!userDoc.exists()) {
+      throw new Error("User tidak ditemukan!");
+    }
+    const currentSaldo = userDoc.data()['saldo'] || 0;
+    
+    // 2. Lakukan perhitungan saldo baru
+    const newSaldo = currentSaldo + amount;
+    
+    // 3. Update saldo di dokumen user
+    transaction.update(userDocRef, { saldo: newSaldo });
+    
+    // 4. Buat catatan transaksi baru
+    const newTransactionRef = doc(transactionColRef); // Buat referensi untuk dokumen baru
+    transaction.set(newTransactionRef, {
+      userId: userId,
+      amount: amount,
+      type: 'TOP_UP',
+      description: 'Isi Saldo',
+      createdAt: new Date()
+    });
+  });
+}
+getTransactionsForUser(userId: string) {
+  // Referensi ke koleksi 'transactions'
+  const transactionsRef = collection(this.firestore, 'transactions');
+  
+  // Buat query untuk mendapatkan transaksi milik userId, diurutkan dari yang terbaru
+  const q = query(
+    transactionsRef, 
+    where('userId', '==', userId),
+    orderBy('createdAt', 'desc')
+  );
+  
+  // Ambil data menggunakan collectionData
+  return collectionData(q, { idField: 'id' });
+}
+async konversiPoin(userId: string, pointsToConvert: number) {
+  const userDocRef = doc(this.firestore, `users/${userId}`);
+  const transactionColRef = collection(this.firestore, 'transactions');
+  
+  return runTransaction(this.firestore, async (transaction) => {
+    // 1. Ambil data user saat ini
+    const userDoc = await transaction.get(userDocRef);
+    if (!userDoc.exists()) {
+      throw new Error("User tidak ditemukan!");
+    }
+    const currentPoin = userDoc.data()['poin'] || 0;
+    const currentSaldo = userDoc.data()['saldo'] || 0;
+    
+    // 2. Validasi: Cek apakah poin mencukupi
+    if (currentPoin < pointsToConvert) {
+      throw new Error("Poin Anda tidak mencukupi untuk dikonversi.");
+    }
+    
+    // 3. Lakukan perhitungan poin dan saldo baru
+    const newPoin = currentPoin - pointsToConvert;
+    const newSaldo = currentSaldo + pointsToConvert; // Asumsi 1 Poin = Rp 1
+    
+    // 4. Update poin dan saldo di dokumen user
+    transaction.update(userDocRef, { 
+      poin: newPoin,
+      saldo: newSaldo 
+    });
+    
+    // 5. Buat catatan transaksi baru
+    const newTransactionRef = doc(transactionColRef);
+    transaction.set(newTransactionRef, {
+      userId: userId,
+      amount: pointsToConvert,
+      type: 'KONVERSI_POIN',
+      description: 'Konversi Poin ke Saldo',
+      createdAt: new Date()
+    });
+  });
+}
 }

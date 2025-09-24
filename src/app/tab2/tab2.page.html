@@ -67,8 +67,8 @@
                   {{ profile.saldo | currency:'IDR':'Rp ' }}
                 </div>
                 <div style="display: flex; gap: 12px;">
-                  <button (click)="topUp()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 500; backdrop-filter: blur(10px);">Top Up</button>
-                  <button (click)="viewHistory()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 500; backdrop-filter: blur(10px);">Riwayat</button>
+                  <button (click)="showTopUpPrompt()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 500; backdrop-filter: blur(10px);">Top Up</button>
+                  <button  routerLink="/riwayat-transaksi" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 500; backdrop-filter: blur(10px);">Riwayat</button>
                 </div>
               </div>
               
@@ -79,7 +79,7 @@
                   {{ profile.poin | number }} Poin
                 </div>
                 <div style="display: flex; gap: 12px;">
-                  <button (click)="convertPoints()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 500; backdrop-filter: blur(10px);">Konversi</button>
+                  <button (click)="showKonversiPrompt()"style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 500; backdrop-filter: blur(10px);">Konversi</button>
                   <button (click)="usePoints()" style="background: rgba(255,255,255,0.2); color: white; border: 1px solid rgba(255,255,255,0.3); padding: 10px 18px; border-radius: 20px; font-size: 12px; font-weight: 500; backdrop-filter: blur(10px);">Gunakan</button>
                 </div>
               </div>
