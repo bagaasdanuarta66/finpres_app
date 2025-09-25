@@ -247,14 +247,15 @@ scrollToSettings() {
     await alert.present();
   }
 
-  async usePoints() {
-    const alert = await this.alertController.create({
-      header: '⭐ Gunakan Poin',
-      message: 'Gunakan poin untuk Donasi ke campaign',
-      buttons: ['Tutup']
-    });
-    await alert.present();
-  }
+  // Di dalam class Tab2Page atau ProfilePage
+
+// Jangan lupa inject 'Router' di constructor jika belum ada
+// constructor(private router: Router) {}
+
+gunakanPoin() {
+  // Pindahkan pengguna ke halaman Campaign
+  this.router.navigate(['/tabs/tab3']);
+}
 
   async viewPrograms() {
     const alert = await this.alertController.create({
